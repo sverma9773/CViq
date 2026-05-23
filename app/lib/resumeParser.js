@@ -219,7 +219,10 @@ function parseCerts(lines) {
 export async function extractTextFromPDF(file) {
   const pdfjsLib = await import("pdfjs-dist");
   if (typeof window !== "undefined") {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+    // Hostinger might fail to fetch local .mjs files due to MIME type restrictions.
+    // Using unpkg CDN for the worker provides a pre-configured MIME type.
+    const pdfjsVersion = pdfjsLib.version || "5.7.284";
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsVersion}/build/pdf.worker.min.mjs`;
   }
 
   const arrayBuffer = await file.arrayBuffer();

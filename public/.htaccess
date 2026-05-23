@@ -1,0 +1,4 @@
+# Define MIME type for .mjs files to ensure they are parsed as JavaScript by the browser
+<IfModule mod_mime.c>
+  AddType application/javascript .mjs
+</IfModule>
