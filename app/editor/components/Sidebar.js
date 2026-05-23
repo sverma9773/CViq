@@ -3,12 +3,14 @@
 import { useState } from "react";
 import SidebarSection from "./SidebarSection";
 import ProfileForm from "./ProfileForm";
+import ProfileSummaryForm from "./ProfileSummaryForm";
 import EducationForm from "./EducationForm";
 import ExperienceForm from "./ExperienceForm";
 import SkillsForm from "./SkillsForm";
 import CertificatesForm from "./CertificatesForm";
 import {
   ClaudeProfileIcon,
+  ClaudeSummaryIcon,
   ClaudeEducationIcon,
   ClaudeExperienceIcon,
   ClaudeSkillsIcon,
@@ -26,6 +28,10 @@ export default function Sidebar() {
     <aside className="sidebar" id="editor-sidebar">
       <SidebarSection title="Profile" icon={<ClaudeProfileIcon size={17} color="#da7756" />} isOpen={openSection === "Profile"} onToggle={() => handleToggle("Profile")}>
         <ProfileForm />
+      </SidebarSection>
+
+      <SidebarSection title="Profile Summary" icon={<ClaudeSummaryIcon size={17} color="#da7756" />} isOpen={openSection === "Profile Summary"} onToggle={() => handleToggle("Profile Summary")}>
+        <ProfileSummaryForm />
       </SidebarSection>
 
       <SidebarSection title="Education" icon={<ClaudeEducationIcon size={17} color="#da7756" />} isOpen={openSection === "Education"} onToggle={() => handleToggle("Education")}>

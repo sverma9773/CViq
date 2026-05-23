@@ -6,7 +6,7 @@
 const STORAGE_KEY = "cviq_resumes";
 
 const emptyResumeData = {
-  profile: { fullName: "", jobTitle: "", email: "", phone: "", location: "", photoUrl: "" },
+  profile: { fullName: "", jobTitle: "", email: "", phone: "", location: "", photoUrl: "", summary: "" },
   education: [{ id: "edu-1", institution: "", degree: "", startDate: "", endDate: "", description: "" }],
   experience: [{ id: "exp-1", company: "", role: "", startDate: "", endDate: "", description: "" }],
   skills: [],
@@ -21,6 +21,7 @@ const sampleResumeData = {
     phone: "+91 9876543210",
     location: "Delhi, India",
     photoUrl: "",
+    summary: "Results-driven Social Media & Content Marketing Specialist with 5+ years of experience in driving brand growth and organic engagement. Proven track record in designing high-impact content strategies, managing cross-functional creative teams, and implementing SEO strategies that significantly expand audience reach and customer loyalty.",
   },
   education: [
     { id: "edu-1", institution: "University of Delhi", degree: "MBA in Marketing", startDate: "2018", endDate: "2020", description: "Specialized in Digital Marketing and Brand Management." },

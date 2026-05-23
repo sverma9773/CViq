@@ -75,12 +75,15 @@ export function parseResumeText(text) {
   }
 
   const sections = splitIntoSections(lines);
+  const summaryLines = sections.profile || [];
+  const summary = summaryLines.join("\n").trim();
 
   return {
     profile: {
       fullName: clean(fullName), jobTitle: clean(jobTitle),
       email: email || "", phone: phone || "",
       location: clean(location), photoUrl: "",
+      summary: summary || "",
     },
     education: fallback(parseEducation(sections.education || []), [{ id: "edu-1", institution: "", degree: "", startDate: "", endDate: "", description: "" }]),
     experience: fallback(parseExperience(sections.experience || []), [{ id: "exp-1", company: "", role: "", startDate: "", endDate: "", description: "" }]),

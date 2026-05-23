@@ -81,6 +81,22 @@ export default function ResumePreview() {
         blocks.push({ type: "header", height: headerHeight + sectionGap });
       }
 
+      // 1.5. Summary Section
+      const summarySection = sandboxRef.current.querySelector("#sandbox-section-summary");
+      if (summarySection) {
+        const titleEl = summarySection.querySelector("#sandbox-section-summary-title");
+        const titleH = titleEl ? titleEl.offsetHeight : 0;
+        const bodyEl = summarySection.querySelector(".resume-summary-text");
+        const bodyH = bodyEl ? bodyEl.offsetHeight : 0;
+
+        blocks.push({
+          type: "full_section",
+          section: "summary",
+          title: "Professional Summary",
+          height: titleH + bodyH + sectionGap
+        });
+      }
+
       // 2. Experience Section
       const expSection = sandboxRef.current.querySelector("#sandbox-section-experience");
       if (expSection) {
@@ -307,6 +323,17 @@ export default function ResumePreview() {
               }
 
               if (block.type === "full_section") {
+                if (block.section === "summary") {
+                  return (
+                    <div key={blockIdx} className="resume-section" style={{ marginTop: `${sectionGap}px` }}>
+                      <h2 style={hStyle()}>{block.title}</h2>
+                      <p className="resume-summary-text" style={{ fontSize: "inherit", color: "#444", margin: "4px 0 0", whiteSpace: "pre-wrap" }}>
+                        {profile.summary}
+                      </p>
+                    </div>
+                  );
+                }
+
                 if (block.section === "skills") {
                   return (
                     <div key={blockIdx} className="resume-section" style={{ marginTop: `${sectionGap}px` }}>
@@ -356,6 +383,16 @@ export default function ResumePreview() {
           </div>
           <div style={{ height: "1px", background: `${accent}30`, marginTop: "10px" }}></div>
         </div>
+
+        {/* Summary */}
+        {profile.summary && (
+          <div id="sandbox-section-summary" className="resume-section" style={{ marginTop: `${sectionGap}px` }}>
+            <h2 id="sandbox-section-summary-title" style={hStyle()}>Professional Summary</h2>
+            <p className="resume-summary-text" style={{ fontSize: "inherit", color: "#444", margin: "4px 0 0", lineHeight: lineHeight, whiteSpace: "pre-wrap" }}>
+              {profile.summary}
+            </p>
+          </div>
+        )}
 
         {/* Experience */}
         {experience.length > 0 && experience.some(e => e.role || e.company) && (

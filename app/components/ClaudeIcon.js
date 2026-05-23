@@ -105,6 +105,17 @@ export function ClaudeStar({ size = 14, filled = true }) {
 /* ── Sidebar Section Icons (Claude line-icon style) ────────────── */
 
 /**
+ * Summary icon — document alignment lines
+ */
+export function ClaudeSummaryIcon({ size = 18, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M3.5 5h13M3.5 9h13M3.5 13h8M3.5 17h11" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
+/**
  * Profile/User icon — head and shoulders silhouette
  */
 export function ClaudeProfileIcon({ size = 18, color = "currentColor" }) {

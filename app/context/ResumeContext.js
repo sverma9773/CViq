@@ -9,7 +9,7 @@ import { db } from "../lib/firebase";
 const ResumeContext = createContext();
 
 const emptyResumeData = {
-  profile: { fullName: "", jobTitle: "", email: "", phone: "", location: "", photoUrl: "" },
+  profile: { fullName: "", jobTitle: "", email: "", phone: "", location: "", photoUrl: "", summary: "" },
   education: [{ id: "edu-1", institution: "", degree: "", startDate: "", endDate: "", description: "" }],
   experience: [{ id: "exp-1", company: "", role: "", startDate: "", endDate: "", description: "" }],
   skills: [],
