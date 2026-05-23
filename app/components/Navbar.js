@@ -35,7 +35,6 @@ export default function Navbar() {
     <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""}`} id="main-navbar">
       <div className="navbar__inner">
         <Link href="/" className="navbar__logo" id="logo-link">
-          <ClaudeIcon size={18} color="#da7756" />
           <span className="logo-title-wrap">
             <span className="logo-brand">CViq</span>
             <span className="logo-separator">|</span>

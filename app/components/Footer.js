@@ -10,7 +10,6 @@ export default function Footer() {
         <div className="footer__grid">
           <div className="footer__brand">
             <Link href="/" className="footer__logo">
-              <ClaudeIcon size={16} color="#da7756" />
               <span className="logo-title-wrap">
                 <span className="logo-brand">CViq</span>
                 <span className="logo-separator">|</span>

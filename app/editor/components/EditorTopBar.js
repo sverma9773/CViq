@@ -62,9 +62,9 @@ export default function EditorTopBar({ activeTab, onTabChange, resumeId, resumeN
     setExporting(true);
     setExportOpen(false);
 
-    // Target the paper element directly (the A4 resume content)
-    const paperEl = document.querySelector(".preview-paper");
-    if (!paperEl) {
+    // Target all paginated page sheets
+    const paperPages = document.querySelectorAll(".preview-paper");
+    if (paperPages.length === 0) {
       alert("Resume preview not found. Please switch to the Resume tab first.");
       setExporting(false);
       return;
@@ -74,62 +74,35 @@ export default function EditorTopBar({ activeTab, onTabChange, resumeId, resumeN
       const html2canvas = (await import("html2canvas-pro")).default;
       const { jsPDF } = await import("jspdf");
 
-      // Temporarily remove rounded corners for clean PDF capture
-      const origRadius = paperEl.style.borderRadius;
-      const origShadow = paperEl.style.boxShadow;
-      paperEl.style.borderRadius = "0";
-      paperEl.style.boxShadow = "none";
-
-      // Make wrapper fully visible for capture
-      const wrapper = document.getElementById("resume-preview-wrapper");
-      const origOverflow = wrapper?.style.overflow;
-      const origHeight = wrapper?.style.height;
-      if (wrapper) { wrapper.style.overflow = "visible"; wrapper.style.height = "auto"; }
-
-      const canvas = await html2canvas(paperEl, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        logging: false,
-      });
-
-      // Restore styles
-      paperEl.style.borderRadius = origRadius;
-      paperEl.style.boxShadow = origShadow;
-      if (wrapper) { wrapper.style.overflow = origOverflow; wrapper.style.height = origHeight; }
-
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfW = pdf.internal.pageSize.getWidth(); // 210mm
       const pdfH = pdf.internal.pageSize.getHeight(); // 297mm
-      const imgW = canvas.width;
-      const imgH = canvas.height;
-      const ratio = pdfW / imgW;
-      const scaledH = imgH * ratio;
 
-      if (scaledH <= pdfH) {
-        pdf.addImage(canvas.toDataURL("image/jpeg", 1.0), "JPEG", 0, 0, pdfW, scaledH);
-      } else {
-        // Multi-page: slice canvas at A4 page boundaries
-        const pageHeightPx = pdfH / ratio;
-        let yPx = 0;
-        let pageNum = 0;
+      for (let i = 0; i < paperPages.length; i++) {
+        const pageEl = paperPages[i];
 
-        while (yPx < imgH) {
-          const sliceH = Math.min(pageHeightPx, imgH - yPx);
-          const pageCanvas = document.createElement("canvas");
-          pageCanvas.width = imgW;
-          pageCanvas.height = sliceH;
-          const ctx = pageCanvas.getContext("2d");
-          ctx.fillStyle = "#ffffff";
-          ctx.fillRect(0, 0, imgW, sliceH);
-          ctx.drawImage(canvas, 0, yPx, imgW, sliceH, 0, 0, imgW, sliceH);
+        // Temporarily remove rounded corners and shadows for perfect print boundaries
+        const origRadius = pageEl.style.borderRadius;
+        const origShadow = pageEl.style.boxShadow;
+        pageEl.style.borderRadius = "0";
+        pageEl.style.boxShadow = "none";
 
-          if (pageNum > 0) pdf.addPage();
-          pdf.addImage(pageCanvas.toDataURL("image/jpeg", 1.0), "JPEG", 0, 0, pdfW, sliceH * ratio);
+        const canvas = await html2canvas(pageEl, {
+          scale: 2.2, // high-end crisp scale
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false,
+          ignoreElements: (el) => el.classList && el.classList.contains("cviq-page-number-indicator")
+        });
 
-          yPx += pageHeightPx;
-          pageNum++;
-        }
+        // Restore styles
+        pageEl.style.borderRadius = origRadius;
+        pageEl.style.boxShadow = origShadow;
+
+        if (i > 0) pdf.addPage();
+        
+        // Add page to PDF (completely matches page dimensions perfectly)
+        pdf.addImage(canvas.toDataURL("image/jpeg", 1.0), "JPEG", 0, 0, pdfW, pdfH);
       }
 
       pdf.save(getFileName("pdf"));
@@ -362,7 +335,6 @@ export default function EditorTopBar({ activeTab, onTabChange, resumeId, resumeN
     <div className="topbar" id="editor-topbar">
       <div className="topbar__left">
         <Link href="/dashboard" className="topbar__logo" id="editor-logo">
-          <ClaudeIcon size={16} color="#da7756" />
           <span className="logo-title-wrap">
             <span className="logo-brand">CViq</span>
             <span className="logo-separator">|</span>

@@ -64,9 +64,35 @@ export default function DashboardPage() {
   const [showImport, setShowImport] = useState(false);
   const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState("");
+  const [loaderMessage, setLoaderMessage] = useState("Firing up CViq neural scanners...");
   const fileInputRef = useRef(null);
   const menuRef = useRef(null);
   const router = useRouter();
+
+  useEffect(() => {
+    if (!importing) return;
+
+    const messages = [
+      "Firing up CViq neural scanners...",
+      "Deconstructing your career history...",
+      "Extracting those high-impact achievements...",
+      "Formatting technical superpowers...",
+      "Evading corporate buzzwords...",
+      "Aligning details to standard ATS parameters...",
+      "Designing your pixel-perfect workspace...",
+      "Almost there! Preparing your editor experience..."
+    ];
+
+    let index = 0;
+    setLoaderMessage(messages[0]);
+
+    const interval = setInterval(() => {
+      index = (index + 1) % messages.length;
+      setLoaderMessage(messages[index]);
+    }, 1200);
+
+    return () => clearInterval(interval);
+  }, [importing]);
 
   const { user } = useAuth();
 
@@ -406,6 +432,7 @@ export default function DashboardPage() {
     if (!file) return;
     setImporting(true);
     setImportError("");
+    const startTime = Date.now();
     try {
       let text = "";
       const ext = file.name.split(".").pop().toLowerCase();
@@ -431,13 +458,19 @@ export default function DashboardPage() {
         all[idx].data = parsed;
         localStorage.setItem("cviq_resumes", JSON.stringify(all));
       }
+      
+      // Enforce minimum 4.2s delay for highly-engaging creative parsing experience
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, 4200 - elapsedTime);
+      await new Promise(resolve => setTimeout(resolve, remainingTime));
+
       setShowImport(false);
       router.push(`/editor?id=${newResume.id}`);
     } catch (err) {
       console.error("Import failed:", err);
       setImportError(err.message || "Import failed. Please try again.");
+      setImporting(false); // Only disable loading on error; on success, transition to editor
     } finally {
-      setImporting(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
@@ -450,7 +483,6 @@ export default function DashboardPage() {
       <aside className="dashboard__sidebar">
         <div className="dashboard__logo-container">
           <Link href="/" className="dashboard__logo">
-            <ClaudeIcon size={18} color="#da7756" />
             <span className="logo-title-wrap">
               <span className="logo-brand">CViq</span>
               <span className="logo-separator">|</span>
@@ -2239,6 +2271,26 @@ export default function DashboardPage() {
           border-color: #0a66c2;
         }
       `}</style>
+
+      {importing && (
+        <div className="cviq-loader-overlay">
+          <div className="cviq-loader-card">
+            <div className="cviq-loader-visual">
+              <div className="cviq-loader-glow-ring"></div>
+              <div className="cviq-loader-icon-wrap">
+                <ClaudeIcon size={32} color="var(--color-accent)" />
+              </div>
+            </div>
+            <div className="cviq-loader-content">
+              <h3 className="cviq-loader-title">CViq AI Resume Scanner</h3>
+              <div className="cviq-loader-progress-track">
+                <div className="cviq-loader-progress-bar"></div>
+              </div>
+              <p className="cviq-loader-message">{loaderMessage}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -56,7 +56,6 @@ export default function LoginPage() {
         <div className="decor-circle decor-circle--bottom"></div>
 
         <Link href="/" className="logo-link">
-          <ClaudeIcon size={24} color="#da7756" />
           <span className="logo-title-wrap">
             <span className="logo-brand">CViq</span>
             <span className="logo-separator">|</span>

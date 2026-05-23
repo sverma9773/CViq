@@ -264,7 +264,6 @@ export default function CoverLetterTopBar({ activeTab, onTabChange, letterId, le
     <div className="topbar" id="cover-letter-topbar">
       <div className="topbar__left">
         <Link href="/dashboard" className="topbar__logo">
-          <ClaudeIcon size={16} color="#da7756" />
           <span className="logo-title-wrap">
             <span className="logo-brand">CViq</span>
             <span className="logo-separator">|</span>

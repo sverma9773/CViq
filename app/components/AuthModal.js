@@ -55,7 +55,6 @@ export default function AuthModal({ isOpen, onClose }) {
 
         <div className="modal-header">
           <div className="logo-container">
-            <ClaudeIcon size={24} color="#da7756" />
             <span className="logo-title-wrap">
               <span className="logo-brand">CViq</span>
               <span className="logo-separator">|</span>
