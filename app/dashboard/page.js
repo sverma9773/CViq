@@ -99,21 +99,93 @@ export default function DashboardPage() {
   useEffect(() => {
     const loadData = async () => {
       if (user) {
+        // Resumes loading & migration
+        let finalResumes = [];
         try {
           const q = query(collection(db, "users", user.uid, "resumes"), orderBy("updatedAt", "desc"));
           const snapshot = await getDocs(q);
           const cloudResumes = snapshot.docs.map(doc => doc.data());
-          // If no cloud resumes, fallback to local storage
-          setResumes(cloudResumes.length > 0 ? cloudResumes : getAllResumes());
+          if (cloudResumes.length > 0) {
+            finalResumes = cloudResumes;
+          } else {
+            // First time migration: sync existing local resumes to cloud
+            const localResumes = getAllResumes();
+            for (const r of localResumes) {
+              try {
+                const docRef = doc(db, "users", user.uid, "resumes", r.id);
+                await setDoc(docRef, r);
+              } catch (e) {
+                console.error("Migration failed for resume:", r.id, e);
+              }
+            }
+            finalResumes = localResumes;
+          }
         } catch (err) {
           console.error("Failed to load cloud resumes:", err);
-          setResumes(getAllResumes());
+          finalResumes = getAllResumes();
         }
+        setResumes(finalResumes);
+
+        // Cover letters loading & migration
+        let finalCoverLetters = [];
+        try {
+          const q = collection(db, "users", user.uid, "coverLetters");
+          const snapshot = await getDocs(q);
+          const cloudCoverLetters = snapshot.docs.map(doc => doc.data());
+          if (cloudCoverLetters.length > 0) {
+            cloudCoverLetters.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+            finalCoverLetters = cloudCoverLetters;
+          } else {
+            // First time migration: sync existing local cover letters to cloud
+            const localLetters = getAllCoverLetters();
+            for (const l of localLetters) {
+              try {
+                const docRef = doc(db, "users", user.uid, "coverLetters", l.id);
+                await setDoc(docRef, l);
+              } catch (e) {
+                console.error("Migration failed for cover letter:", l.id, e);
+              }
+            }
+            finalCoverLetters = localLetters;
+          }
+        } catch (err) {
+          console.error("Failed to load cloud cover letters:", err);
+          finalCoverLetters = getAllCoverLetters();
+        }
+        setCoverLetters(finalCoverLetters);
+
+        // Job Tracker Applications loading & migration
+        let finalApplications = [];
+        try {
+          const q = collection(db, "users", user.uid, "applications");
+          const snapshot = await getDocs(q);
+          const cloudApps = snapshot.docs.map(doc => doc.data());
+          if (cloudApps.length > 0) {
+            cloudApps.sort((a, b) => new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime());
+            finalApplications = cloudApps;
+          } else {
+            // First time migration: sync existing local applications to cloud
+            const localApps = getAllApplications();
+            for (const app of localApps) {
+              try {
+                const docRef = doc(db, "users", user.uid, "applications", app.id);
+                await setDoc(docRef, app);
+              } catch (e) {
+                console.error("Migration failed for application:", app.id, e);
+              }
+            }
+            finalApplications = localApps;
+          }
+        } catch (err) {
+          console.error("Failed to load cloud applications:", err);
+          finalApplications = getAllApplications();
+        }
+        setApplications(finalApplications);
       } else {
         setResumes(getAllResumes());
+        setCoverLetters(getAllCoverLetters());
+        setApplications(getAllApplications());
       }
-      setCoverLetters(getAllCoverLetters());
-      setApplications(getAllApplications());
       setLoaded(true);
     };
     loadData();
@@ -148,12 +220,25 @@ export default function DashboardPage() {
     router.push(`/editor?id=${newResume.id}`);
   };
 
-  const handleCreateCoverLetter = () => {
+  const handleCreateCoverLetter = async () => {
     const newLetter = createCoverLetter("Untitled Cover Letter");
+    if (user) {
+      try {
+        const docRef = doc(db, "users", user.uid, "coverLetters", newLetter.id);
+        await setDoc(docRef, {
+          id: newLetter.id,
+          name: newLetter.name,
+          data: newLetter.data,
+          updatedAt: Date.now()
+        });
+      } catch (e) {
+        console.error("Failed to sync new cover letter to Firestore:", e);
+      }
+    }
     router.push(`/cover-letter/editor?id=${newLetter.id}`);
   };
 
-  const handleAddAppSubmit = () => {
+  const handleAddAppSubmit = async () => {
     if (!newAppCompany.trim() || !newAppTitle.trim()) return;
 
     let score = 0;
@@ -169,7 +254,7 @@ export default function DashboardPage() {
       score = 70; // default base match score
     }
 
-    createApplication({
+    const appData = {
       company: newAppCompany.trim(),
       title: newAppTitle.trim(),
       url: newAppUrl.trim(),
@@ -178,7 +263,27 @@ export default function DashboardPage() {
       resumeId: targetResumeId,
       coverLetterId: newAppCoverLetterId,
       matchScore: score
-    });
+    };
+
+    const newApp = createApplication(appData);
+
+    if (user) {
+      try {
+        const docRef = doc(db, "users", user.uid, "applications", newApp.id);
+        await setDoc(docRef, newApp);
+
+        const qApps = collection(db, "users", user.uid, "applications");
+        const snapshot = await getDocs(qApps);
+        const cloudApps = snapshot.docs.map(doc => doc.data());
+        cloudApps.sort((a, b) => new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime());
+        setApplications(cloudApps);
+      } catch (e) {
+        console.error("Failed to sync new application to Firestore:", e);
+        setApplications(getAllApplications());
+      }
+    } else {
+      setApplications(getAllApplications());
+    }
 
     // Reset fields & reload
     setNewAppCompany("");
@@ -189,27 +294,80 @@ export default function DashboardPage() {
     setNewAppResumeId("");
     setNewAppCoverLetterId("");
     setShowAddApp(false);
-    setApplications(getAllApplications());
   };
 
-  const handleDeleteApp = (id) => {
+  const handleDeleteApp = async (id) => {
     deleteApplication(id);
-    setApplications(getAllApplications());
+    if (user) {
+      try {
+        const docRef = doc(db, "users", user.uid, "applications", id);
+        await deleteDoc(docRef);
+
+        const qApps = collection(db, "users", user.uid, "applications");
+        const snapshot = await getDocs(qApps);
+        const cloudApps = snapshot.docs.map(doc => doc.data());
+        cloudApps.sort((a, b) => new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime());
+        setApplications(cloudApps);
+      } catch (e) {
+        console.error("Failed to delete application from Firestore:", e);
+        setApplications(getAllApplications());
+      }
+    } else {
+      setApplications(getAllApplications());
+    }
   };
 
-  const handleUpdateAppStatus = (id, status) => {
+  const handleUpdateAppStatus = async (id, status) => {
     updateApplication(id, { status });
-    setApplications(getAllApplications());
+    if (user) {
+      try {
+        const docRef = doc(db, "users", user.uid, "applications", id);
+        await setDoc(docRef, { status }, { merge: true });
+
+        const qApps = collection(db, "users", user.uid, "applications");
+        const snapshot = await getDocs(qApps);
+        const cloudApps = snapshot.docs.map(doc => doc.data());
+        cloudApps.sort((a, b) => new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime());
+        setApplications(cloudApps);
+      } catch (e) {
+        console.error("Failed to update application status in Firestore:", e);
+        setApplications(getAllApplications());
+      }
+    } else {
+      setApplications(getAllApplications());
+    }
   };
 
   const handleDuplicate = async (id) => {
     if (id.startsWith("coverletter_")) {
       const dup = duplicateCoverLetter(id);
-      if (dup) setCoverLetters(getAllCoverLetters());
+      if (dup) {
+        if (user) {
+          try {
+            const docRef = doc(db, "users", user.uid, "coverLetters", dup.id);
+            await setDoc(docRef, {
+              id: dup.id,
+              name: dup.name,
+              data: dup.data,
+              updatedAt: Date.now()
+            });
+
+            const q = collection(db, "users", user.uid, "coverLetters");
+            const snapshot = await getDocs(q);
+            const cloudCoverLetters = snapshot.docs.map(doc => doc.data());
+            cloudCoverLetters.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+            setCoverLetters(cloudCoverLetters);
+          } catch (e) {
+            console.error("Failed to duplicate cover letter in Firestore:", e);
+            setCoverLetters(getAllCoverLetters());
+          }
+        } else {
+          setCoverLetters(getAllCoverLetters());
+        }
+      }
     } else {
       const dup = duplicateResume(id);
       if (dup) {
-        setResumes(getAllResumes());
         if (user) {
           try {
             const docRef = doc(db, "users", user.uid, "resumes", dup.id);
@@ -219,9 +377,17 @@ export default function DashboardPage() {
               data: dup.data,
               updatedAt: Date.now()
             });
+
+            const q = query(collection(db, "users", user.uid, "resumes"), orderBy("updatedAt", "desc"));
+            const snapshot = await getDocs(q);
+            const cloudResumes = snapshot.docs.map(doc => doc.data());
+            setResumes(cloudResumes);
           } catch (e) {
             console.error("Failed to duplicate resume in Firestore:", e);
+            setResumes(getAllResumes());
           }
+        } else {
+          setResumes(getAllResumes());
         }
       }
     }
@@ -231,17 +397,40 @@ export default function DashboardPage() {
   const handleDelete = async (id) => {
     if (id.startsWith("coverletter_")) {
       deleteCoverLetter(id);
-      setCoverLetters(getAllCoverLetters());
+      if (user) {
+        try {
+          const docRef = doc(db, "users", user.uid, "coverLetters", id);
+          await deleteDoc(docRef);
+
+          const q = collection(db, "users", user.uid, "coverLetters");
+          const snapshot = await getDocs(q);
+          const cloudCoverLetters = snapshot.docs.map(doc => doc.data());
+          cloudCoverLetters.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+          setCoverLetters(cloudCoverLetters);
+        } catch (e) {
+          console.error("Failed to delete cover letter in Firestore:", e);
+          setCoverLetters(getAllCoverLetters());
+        }
+      } else {
+        setCoverLetters(getAllCoverLetters());
+      }
     } else {
       deleteResume(id);
-      setResumes(getAllResumes());
       if (user) {
         try {
           const docRef = doc(db, "users", user.uid, "resumes", id);
           await deleteDoc(docRef);
+
+          const q = query(collection(db, "users", user.uid, "resumes"), orderBy("updatedAt", "desc"));
+          const snapshot = await getDocs(q);
+          const cloudResumes = snapshot.docs.map(doc => doc.data());
+          setResumes(cloudResumes);
         } catch (e) {
           console.error("Failed to delete resume in Firestore:", e);
+          setResumes(getAllResumes());
         }
+      } else {
+        setResumes(getAllResumes());
       }
     }
     setDeleteConfirm(null);
@@ -254,14 +443,45 @@ export default function DashboardPage() {
     setMenuOpen(null);
   };
 
-  const handleRenameSubmit = () => {
+  const handleRenameSubmit = async () => {
     if (renameValue.trim()) {
       if (renameId.startsWith("coverletter_")) {
         renameCoverLetter(renameId, renameValue.trim());
-        setCoverLetters(getAllCoverLetters());
+        if (user) {
+          try {
+            const docRef = doc(db, "users", user.uid, "coverLetters", renameId);
+            await setDoc(docRef, { name: renameValue.trim(), updatedAt: Date.now() }, { merge: true });
+
+            const q = collection(db, "users", user.uid, "coverLetters");
+            const snapshot = await getDocs(q);
+            const cloudCoverLetters = snapshot.docs.map(doc => doc.data());
+            cloudCoverLetters.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+            setCoverLetters(cloudCoverLetters);
+          } catch (e) {
+            console.error("Failed to rename cover letter in Firestore:", e);
+            setCoverLetters(getAllCoverLetters());
+          }
+        } else {
+          setCoverLetters(getAllCoverLetters());
+        }
       } else {
         renameResume(renameId, renameValue.trim());
-        setResumes(getAllResumes());
+        if (user) {
+          try {
+            const docRef = doc(db, "users", user.uid, "resumes", renameId);
+            await setDoc(docRef, { name: renameValue.trim(), updatedAt: Date.now() }, { merge: true });
+
+            const q = query(collection(db, "users", user.uid, "resumes"), orderBy("updatedAt", "desc"));
+            const snapshot = await getDocs(q);
+            const cloudResumes = snapshot.docs.map(doc => doc.data());
+            setResumes(cloudResumes);
+          } catch (e) {
+            console.error("Failed to rename resume in Firestore:", e);
+            setResumes(getAllResumes());
+          }
+        } else {
+          setResumes(getAllResumes());
+        }
       }
     }
     setRenameId(null);

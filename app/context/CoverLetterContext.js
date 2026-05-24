@@ -1,7 +1,10 @@
 "use client";
 
 import { createContext, useContext, useReducer, useEffect, useRef } from "react";
-import { saveCoverLetter } from "../lib/coverLetterStore";
+import { saveCoverLetter, getCoverLetterById } from "../lib/coverLetterStore";
+import { useAuth } from "./AuthContext";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 const CoverLetterContext = createContext();
 
@@ -44,6 +47,7 @@ function coverLetterReducer(state, action) {
 export function CoverLetterProvider({ children, coverLetterId, initialData }) {
   const [coverLetterData, dispatch] = useReducer(coverLetterReducer, initialData || emptyCoverLetterData);
   const idRef = useRef(coverLetterId);
+  const { user } = useAuth();
 
   // Persist to store on every change
   useEffect(() => {
@@ -51,6 +55,30 @@ export function CoverLetterProvider({ children, coverLetterId, initialData }) {
       saveCoverLetter(idRef.current, coverLetterData);
     }
   }, [coverLetterData]);
+
+  // Debounced auto-save to Firestore for signed-in users
+  useEffect(() => {
+    if (!user || !idRef.current) return;
+
+    const timer = setTimeout(async () => {
+      try {
+        const localLetter = getCoverLetterById(idRef.current);
+        const name = localLetter ? localLetter.name : "Cover Letter";
+        const docRef = doc(db, "users", user.uid, "coverLetters", idRef.current);
+        await setDoc(docRef, {
+          id: idRef.current,
+          name: name,
+          data: coverLetterData,
+          updatedAt: Date.now()
+        }, { merge: true });
+        console.log("[AutoSave] Cover letter automatically synced to Firestore.");
+      } catch (err) {
+        console.error("[AutoSave] Auto-save to Firestore failed:", err);
+      }
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [coverLetterData, user]);
 
   return (
     <CoverLetterContext.Provider value={{ coverLetterData, dispatch, coverLetterId: idRef.current }}>

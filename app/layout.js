@@ -1,5 +1,6 @@
 import "./globals.css";
 import { AuthContextProvider } from "./context/AuthContext";
+import AuthModal from "./components/AuthModal";
 
 export const metadata = {
   title: "CViq — Build Professional Resumes in Minutes",
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
       <body>
         <AuthContextProvider>
           {children}
+          <AuthModal />
         </AuthContextProvider>
       </body>
     </html>

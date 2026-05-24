@@ -9,6 +9,9 @@ import CoverLetterSidebar from "../components/CoverLetterSidebar";
 import CoverLetterPreview from "../components/CoverLetterPreview";
 import CoverLetterCustomizeView from "../components/CoverLetterCustomizeView";
 import { ClaudeSparkleSmall } from "../../components/ClaudeIcon";
+import { useAuth } from "../../context/AuthContext";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../lib/firebase";
 
 function EditorContent() {
   const searchParams = useSearchParams();
@@ -20,28 +23,51 @@ function EditorContent() {
   const [loaded, setLoaded] = useState(false);
   const [mobileView, setMobileView] = useState("edit"); // "edit" or "preview"
 
+  const { user } = useAuth();
+
   useEffect(() => {
-    const id = searchParams.get("id");
-    if (id) {
-      const letter = getCoverLetterById(id);
-      if (letter) {
-        setLetterId(letter.id);
-        setInitialData(letter.data);
-        setLetterName(letter.name);
-        setLoaded(true);
-        return;
+    const loadLetter = async () => {
+      const id = searchParams.get("id");
+      if (id) {
+        if (user) {
+          try {
+            const docRef = doc(db, "users", user.uid, "coverLetters", id);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              const cloudLetter = docSnap.data();
+              setLetterId(cloudLetter.id);
+              setInitialData(cloudLetter.data);
+              setLetterName(cloudLetter.name);
+              setLoaded(true);
+              return;
+            }
+          } catch (e) {
+            console.error("Failed to load cloud cover letter:", e);
+          }
+        }
+
+        const letter = getCoverLetterById(id);
+        if (letter) {
+          setLetterId(letter.id);
+          setInitialData(letter.data);
+          setLetterName(letter.name);
+          setLoaded(true);
+          return;
+        }
       }
-    }
-    const all = getAllCoverLetters();
-    if (all.length > 0) {
-      setLetterId(all[0].id);
-      setInitialData(all[0].data);
-      setLetterName(all[0].name);
-      setLoaded(true);
-    } else {
-      router.push("/dashboard");
-    }
-  }, [searchParams, router]);
+      const all = getAllCoverLetters();
+      if (all.length > 0) {
+        setLetterId(all[0].id);
+        setInitialData(all[0].data);
+        setLetterName(all[0].name);
+        setLoaded(true);
+      } else {
+        router.push("/dashboard");
+      }
+    };
+
+    loadLetter();
+  }, [searchParams, router, user]);
 
   if (!loaded || !initialData) {
     return (

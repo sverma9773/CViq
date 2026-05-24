@@ -5,6 +5,9 @@ import Link from "next/link";
 import ClaudeIcon, { ClaudeDownload, ClaudeCheck, ClaudeSparkleSmall, ClaudeFileIcon } from "../../components/ClaudeIcon";
 import { useCoverLetter } from "../../context/CoverLetterContext";
 import { renameCoverLetter } from "../../lib/coverLetterStore";
+import { useAuth } from "../../context/AuthContext";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../../lib/firebase";
 
 export default function CoverLetterTopBar({ activeTab, onTabChange, letterId, letterName, setLetterName }) {
   const [exportOpen, setExportOpen] = useState(false);
@@ -13,6 +16,7 @@ export default function CoverLetterTopBar({ activeTab, onTabChange, letterId, le
   const [renameValue, setRenameValue] = useState(letterName || "Cover Letter");
   const dropdownRef = useRef(null);
   const { coverLetterData } = useCoverLetter();
+  const { user } = useAuth();
 
   useEffect(() => { setRenameValue(letterName); }, [letterName]);
 
@@ -27,11 +31,20 @@ export default function CoverLetterTopBar({ activeTab, onTabChange, letterId, le
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleRenameSubmit = () => {
+  const handleRenameSubmit = async () => {
     const trimmed = renameValue.trim();
     if (trimmed && letterId) {
       renameCoverLetter(letterId, trimmed);
       setLetterName(trimmed);
+      if (user) {
+        try {
+          const docRef = doc(db, "users", user.uid, "coverLetters", letterId);
+          await setDoc(docRef, { name: trimmed, updatedAt: Date.now() }, { merge: true });
+          console.log("[Rename] Synced cover letter to Firestore.");
+        } catch (e) {
+          console.error("[Rename] Failed to sync cover letter to Firestore:", e);
+        }
+      }
     } else {
       setRenameValue(letterName);
     }

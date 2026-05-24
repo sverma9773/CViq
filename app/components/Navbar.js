@@ -10,8 +10,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const { user, logOut } = useAuth();
+  const { user, logOut, setAuthModalOpen } = useAuth();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -127,8 +126,6 @@ export default function Navbar() {
           </button>
         </div>
       </div>
-
-      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
 
       <style jsx>{`
         .navbar {

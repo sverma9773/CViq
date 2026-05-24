@@ -16,6 +16,8 @@ const AuthContext = createContext({
   loading: true,
   signInWithGoogle: () => {},
   logOut: () => {},
+  isAuthModalOpen: false,
+  setAuthModalOpen: () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -23,6 +25,7 @@ export const useAuth = () => useContext(AuthContext);
 export function AuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthModalOpen, setAuthModalOpen] = useState(false);
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
@@ -76,7 +79,7 @@ export function AuthContextProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, logOut }}>
+    <AuthContext.Provider value={{ user, loading, signInWithGoogle, logOut, isAuthModalOpen, setAuthModalOpen }}>
       {!loading ? children : <div className="min-h-screen flex items-center justify-center">Loading...</div>}
     </AuthContext.Provider>
   );

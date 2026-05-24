@@ -5,7 +5,6 @@ import Link from "next/link";
 import ClaudeIcon, { ClaudeArrow, ClaudeCheck, ClaudeSparkleSmall } from "./ClaudeIcon";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
-import AuthModal from "./AuthModal";
 
 const WORDS = ["Be in the top 2%.", "& Get Hired"];
 
@@ -15,8 +14,7 @@ export default function HeroSection() {
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(100);
   const [totalResumes, setTotalResumes] = useState(249103);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, setAuthModalOpen } = useAuth();
   const router = useRouter();
 
   const handleCtaClick = (e) => {
@@ -412,7 +410,6 @@ export default function HeroSection() {
           }
         }
       `}</style>
-      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </section>
   );
 }

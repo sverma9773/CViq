@@ -5,11 +5,14 @@ import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 import ClaudeIcon, { ClaudeSparkleSmall } from "./ClaudeIcon";
 
-export default function AuthModal({ isOpen, onClose }) {
-  const { user, signInWithGoogle, loading } = useAuth();
+export default function AuthModal({ isOpen: propIsOpen, onClose: propOnClose }) {
+  const { user, signInWithGoogle, loading, isAuthModalOpen, setAuthModalOpen } = useAuth();
   const [error, setError] = useState(null);
   const [isSigningIn, setIsSigningIn] = useState(false);
   const router = useRouter();
+
+  const isOpen = propIsOpen !== undefined ? propIsOpen : isAuthModalOpen;
+  const onClose = propOnClose || (() => setAuthModalOpen(false));
 
   useEffect(() => {
     if (user && isOpen) {
@@ -89,6 +92,14 @@ export default function AuthModal({ isOpen, onClose }) {
             </svg>
           )}
           {isSigningIn ? "Signing in..." : "Continue with Google"}
+        </button>
+
+        <button
+          onClick={() => { onClose(); router.push("/dashboard"); }}
+          disabled={isSigningIn}
+          className="guest-btn"
+        >
+          Continue as Guest (No Sign-Up)
         </button>
 
         <div className="modal-footer-text">
@@ -233,7 +244,7 @@ export default function AuthModal({ isOpen, onClose }) {
           cursor: pointer;
           transition: all 0.2s ease;
           box-shadow: 0 2px 4px rgba(25, 25, 24, 0.02);
-          margin-bottom: 24px;
+          margin-bottom: 12px;
         }
 
         .google-btn:hover:not(:disabled) {
@@ -245,6 +256,30 @@ export default function AuthModal({ isOpen, onClose }) {
         .google-btn:disabled {
           opacity: 0.7;
           cursor: not-allowed;
+        }
+
+        .guest-btn {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 12px 20px;
+          background: transparent;
+          border: 1px dashed #eae6e2;
+          border-radius: 12px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: #9b9b94;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          margin-bottom: 24px;
+        }
+
+        .guest-btn:hover {
+          background: #faf8f6;
+          border-color: #da7756;
+          color: #da7756;
+          transform: translateY(-1px);
         }
 
         .google-icon {
