@@ -2,109 +2,113 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
-    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-    if (!OPENAI_API_KEY) {
-      console.error("OPENAI_API_KEY is not set in environment variables.");
+    if (!GEMINI_API_KEY) {
+      console.error("GEMINI_API_KEY is not set in environment variables.");
       return NextResponse.json(
-        { error: "AI service is not configured. Please add your OpenAI API key to .env.local" },
+        {
+          error:
+            "AI service is not configured. Please add your Gemini API key to .env.local",
+        },
         { status: 500 }
       );
     }
 
-    const { resumeData, jobDescription } = await request.json();
+    const { message, resumeData, history } = await request.json();
 
-    if (!jobDescription || !resumeData) {
+    if (!message || !message.trim()) {
       return NextResponse.json(
-        { error: "Missing job description or resume data." },
+        { error: "Please enter a message." },
         { status: 400 }
       );
     }
 
-    const systemPrompt = `You are an expert resume writer and career coach. Your task is to rewrite and optimize an existing resume to better match a specific job description. 
+    const systemPrompt = `You are a friendly, expert resume coach and career advisor built into a resume builder app. The user is currently editing their resume, and you have access to their resume data for context.
 
-RULES:
-1. Tailor the profile summary to highlight relevant experience for the target role.
-2. Rewrite experience descriptions using strong action verbs and quantifiable achievements that align with the job requirements.
-3. Reorder and emphasize skills that are mentioned in the job description.
-4. Add any missing relevant skills from the job description that the candidate could reasonably claim.
-5. Keep education and certificates unchanged unless minor wording improvements help.
-6. Maintain truthfulness — enhance and reframe, but do NOT fabricate experience.
-7. Use concise, impactful, ATS-friendly language.
-8. Return ONLY valid JSON matching the exact structure provided — no markdown, no explanation, no code fences.`;
+Here is the user's current resume data:
+${resumeData ? JSON.stringify(resumeData, null, 2) : "(No resume data available)"}
 
-    const userPrompt = `Here is the current resume data (JSON):
-${JSON.stringify(resumeData, null, 2)}
+GUIDELINES:
+1. Answer questions about resumes, career advice, job searching, interview prep, and professional development.
+2. When the user asks you to improve or suggest content, reference their actual resume data above to give personalized advice.
+3. Be concise but thorough. Use bullet points and formatting when helpful.
+4. If the user asks something unrelated to careers/resumes, politely redirect them — you are a resume assistant.
+5. Be encouraging and constructive. Never be dismissive of the user's experience.
+6. When suggesting text (like a summary or bullet point), provide the exact text they can copy.
+7. Use markdown formatting in your responses for readability (bold, bullet points, headers, etc.).`;
 
-Here is the target job description:
-"""
-${jobDescription}
-"""
+    // Build the conversation contents array for Gemini
+    const contents = [];
 
-Rewrite the resume to be optimized for this job. Return the rewritten resume as a JSON object with the EXACT same structure as the input. Every field key must be preserved. Only change the text values to be better tailored.`;
+    // Add conversation history if present
+    if (history && Array.isArray(history)) {
+      for (const msg of history) {
+        contents.push({
+          role: msg.role === "user" ? "user" : "model",
+          parts: [{ text: msg.text }],
+        });
+      }
+    }
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        temperature: 0.7,
-        max_tokens: 4096,
-      }),
+    // Add the current user message
+    contents.push({
+      role: "user",
+      parts: [{ text: message.trim() }],
     });
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents,
+          systemInstruction: {
+            parts: [{ text: systemPrompt }],
+          },
+          generationConfig: {
+            temperature: 0.7,
+          },
+        }),
+      }
+    );
 
     if (!response.ok) {
       const errText = await response.text();
-      console.error("OpenAI API error:", response.status, errText);
+      console.error("Gemini API error:", response.status, errText);
 
       let userMessage = "Failed to get AI response. Please try again.";
       try {
         const errJson = JSON.parse(errText);
         if (errJson.error?.message) {
-          userMessage = `OpenAI error: ${errJson.error.message}`;
+          userMessage = `Gemini API error: ${errJson.error.message}`;
         }
       } catch {}
 
-      if (response.status === 401) {
-        userMessage = "Invalid API key. Please check your OpenAI API key in .env.local";
-      } else if (response.status === 429) {
-        userMessage = "Rate limited or quota exceeded. Please check your OpenAI billing.";
+      if (response.status === 400) {
+        userMessage =
+          "Invalid request format or bad Gemini API key. Please check your config.";
       }
 
-      return NextResponse.json(
-        { error: userMessage },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: userMessage }, { status: 500 });
     }
 
     const data = await response.json();
-    const content = data.choices?.[0]?.message?.content;
+    const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!content) {
       return NextResponse.json(
-        { error: "Empty response from AI." },
+        { error: "Empty response from Gemini AI." },
         { status: 500 }
       );
     }
 
-    // Parse the JSON response — strip possible markdown fences
-    let cleaned = content.trim();
-    if (cleaned.startsWith("```")) {
-      cleaned = cleaned.replace(/^```(?:json)?\s*/, "").replace(/```\s*$/, "");
-    }
-
-    const rewrittenResume = JSON.parse(cleaned);
-
-    return NextResponse.json({ rewrittenResume });
+    return NextResponse.json({ response: content.trim() });
   } catch (err) {
-    console.error("AI rewrite error:", err);
+    console.error("AI chat error:", err);
     return NextResponse.json(
       { error: "Something went wrong. Please try again." },
       { status: 500 }
