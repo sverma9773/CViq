@@ -89,7 +89,7 @@ export default function HeroSection() {
           <div className="hero__trust">
             <div className="hero__trust-item">
               <ClaudeCheck size={14} color="#5a8a3c" />
-              <span>Free Forever</span>
+              <span>Your 1st Resume is Free Forever</span>
             </div>
             <div className="hero__trust-item">
               <ClaudeCheck size={14} color="#5a8a3c" />
@@ -143,6 +143,19 @@ export default function HeroSection() {
                 <div className="hero__preview-line" style={{width: '78%'}}></div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="hero__partners-strip">
+        <div className="container hero__partners-container">
+          <span className="hero__partners-title">Trusted by candidates hired at leading firms</span>
+          <div className="hero__partners-logos">
+            <img src="https://1000logos.net/wp-content/uploads/2020/04/ernst-young-ey-logo-1536x1282.png" alt="EY" className="hero__partner-img hero__partner-img--ey" title="EY" />
+            <img src="https://1000logos.net/wp-content/uploads/2021/05/PwC-logo-1536x864.png" alt="PwC" className="hero__partner-img hero__partner-img--pwc" title="PwC" />
+            <img src="https://1000logos.net/wp-content/uploads/2023/03/KPMG-logo-1536x864.png" alt="KPMG" className="hero__partner-img hero__partner-img--kpmg" title="KPMG" />
+            <img src="https://1000logos.net/wp-content/uploads/2021/05/Google-logo-1536x864.png" alt="Google" className="hero__partner-img hero__partner-img--google" title="Google" />
+            <img src="https://1000logos.net/wp-content/uploads/2017/04/Microsoft-Logo.png" alt="Microsoft" className="hero__partner-img hero__partner-img--microsoft" title="Microsoft" />
           </div>
         </div>
       </div>
@@ -205,6 +218,59 @@ export default function HeroSection() {
           gap: 6px;
           font-size: 0.82rem;
           color: var(--color-text-secondary);
+        }
+
+        .hero__partners-strip {
+          background: #faf8f5;
+          border-top: 1px solid #eae6e1;
+          border-bottom: 1px solid #eae6e1;
+          padding: 20px 0;
+          width: 100%;
+          margin-top: 80px;
+          margin-bottom: -80px;
+        }
+
+        .hero__partners-container {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 32px;
+        }
+
+        .hero__partners-title {
+          font-family: var(--font-body);
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: var(--color-text-secondary);
+          white-space: nowrap;
+        }
+
+        .hero__partners-logos {
+          display: flex;
+          align-items: center;
+          gap: 36px;
+        }
+
+        .hero__partner-img {
+          width: auto;
+          object-fit: contain;
+          opacity: 0.65;
+          transition: all var(--transition-fast);
+          filter: grayscale(1) contrast(1.1);
+        }
+
+        /* Visually balance 1000logos.net image dimensions & padding */
+        .hero__partner-img--ey { height: 32px; }
+        .hero__partner-img--pwc { height: 32px; }
+        .hero__partner-img--kpmg { height: 30px; }
+        .hero__partner-img--google { height: 48px; }
+        .hero__partner-img--microsoft { height: 42px; }
+
+        .hero__partner-img:hover {
+          opacity: 1;
+          filter: none;
         }
 
         .hero__visual {
@@ -408,6 +474,39 @@ export default function HeroSection() {
             width: min(320px, 100%);
             margin: 0 auto;
           }
+
+          .hero__partners-strip {
+            margin-top: 48px;
+            margin-bottom: -48px;
+            padding: 16px 0;
+          }
+
+          .hero__partners-container {
+            flex-direction: column;
+            gap: 16px;
+            text-align: center;
+          }
+
+          .hero__partners-title {
+            font-size: 0.7rem;
+          }
+
+          .hero__partners-logos {
+            gap: 16px 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+          }
+
+          .hero__partner-img {
+            width: auto;
+            object-fit: contain;
+          }
+
+          .hero__partner-img--ey { height: 24px; }
+          .hero__partner-img--pwc { height: 24px; }
+          .hero__partner-img--kpmg { height: 22px; }
+          .hero__partner-img--google { height: 32px; }
+          .hero__partner-img--microsoft { height: 28px; }
         }
       `}</style>
     </section>

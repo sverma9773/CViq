@@ -9,7 +9,8 @@ import {
   getRedirectResult,
   signOut,
 } from "firebase/auth";
-import { auth } from "../lib/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { auth, db } from "../lib/firebase";
 
 const AuthContext = createContext({
   user: null,
@@ -18,6 +19,8 @@ const AuthContext = createContext({
   logOut: () => {},
   isAuthModalOpen: false,
   setAuthModalOpen: () => {},
+  isPro: false,
+  refreshProStatus: () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -26,6 +29,21 @@ export function AuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
+  const [isPro, setIsPro] = useState(false);
+
+  const refreshProStatus = async (uid) => {
+    if (!uid) return;
+    try {
+      const userDoc = await getDoc(doc(db, "users", uid));
+      if (userDoc.exists()) {
+        setIsPro(userDoc.data().isPro || false);
+      } else {
+        setIsPro(false);
+      }
+    } catch (error) {
+      console.error("Failed to fetch pro status", error);
+    }
+  };
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
@@ -70,8 +88,13 @@ export function AuthContextProvider({ children }) {
         console.error("Redirect sign-in error:", error);
       });
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
+      if (user) {
+        await refreshProStatus(user.uid);
+      } else {
+        setIsPro(false);
+      }
       setLoading(false);
     });
 
@@ -79,7 +102,7 @@ export function AuthContextProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, logOut, isAuthModalOpen, setAuthModalOpen }}>
+    <AuthContext.Provider value={{ user, loading, signInWithGoogle, logOut, isAuthModalOpen, setAuthModalOpen, isPro, refreshProStatus }}>
       {!loading ? children : <div className="min-h-screen flex items-center justify-center">Loading...</div>}
     </AuthContext.Provider>
   );

@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import ClaudeIcon from "./ClaudeIcon";
+import ProBadge from "./ProBadge";
 import { useAuth } from "../context/AuthContext";
 import AuthModal from "./AuthModal";
 
@@ -10,8 +12,9 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { user, logOut, setAuthModalOpen } = useAuth();
+  const { user, isPro, logOut, setAuthModalOpen } = useAuth();
   const dropdownRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -54,10 +57,28 @@ export default function Navbar() {
           <a href="#faq" className="navbar__link" onClick={() => setMobileOpen(false)}>
             FAQ
           </a>
+          <Link href="/pricing" className="navbar__link" onClick={() => setMobileOpen(false)}>
+            Pricing
+          </Link>
           {user ? (
             <div className="navbar__user-mobile">
-              <span className="navbar__user-name-mobile">Hello, {user.displayName || user.email?.split("@")[0]}</span>
-              <button onClick={() => { logOut(); setMobileOpen(false); }} className="btn btn-outline btn-sm">
+              <span className="navbar__user-name-mobile">
+                {user.displayName || user.email?.split("@")[0]}
+                {isPro && <ProBadge />}
+              </span>
+              {!isPro && (
+                <Link href="/pricing" className="btn btn-accent btn-sm" onClick={() => setMobileOpen(false)} style={{marginBottom: "8px"}}>
+                  Upgrade to Pro
+                </Link>
+              )}
+              <button 
+                onClick={async () => { 
+                  await logOut(); 
+                  setMobileOpen(false); 
+                  window.location.href = "/"; 
+                }} 
+                className="btn btn-outline btn-sm"
+              >
                 Sign Out
               </button>
             </div>
@@ -84,6 +105,7 @@ export default function Navbar() {
                 aria-expanded={dropdownOpen}
               >
                 {user.displayName || user.email?.split("@")[0]}
+                {isPro && <ProBadge />}
                 <svg className={`navbar__arrow ${dropdownOpen ? "navbar__arrow--open" : ""}`} width="10" height="10" viewBox="0 0 10 10" fill="none">
                   <path d="M2.5 4L5 6.5L7.5 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
@@ -93,8 +115,17 @@ export default function Navbar() {
                   <Link href="/dashboard" className="navbar__dropdown-item-link" onClick={() => setDropdownOpen(false)}>
                     Dashboard
                   </Link>
+                  {!isPro && (
+                    <Link href="/pricing" className="navbar__dropdown-item-link" onClick={() => setDropdownOpen(false)}>
+                      Upgrade to Pro
+                    </Link>
+                  )}
                   <button 
-                    onClick={() => { logOut(); setDropdownOpen(false); }} 
+                    onClick={async () => { 
+                      await logOut(); 
+                      setDropdownOpen(false); 
+                      window.location.href = "/"; 
+                    }} 
                     className="navbar__dropdown-item"
                   >
                     Sign Out
@@ -273,26 +304,38 @@ export default function Navbar() {
           margin-top: 8px;
           background: var(--color-bg);
           border: 1px solid var(--color-border);
-          border-radius: var(--radius-md);
-          box-shadow: 0 4px 16px rgba(25, 25, 24, 0.08);
-          padding: 6px 0;
-          min-width: 140px;
+          border-radius: var(--radius-lg);
+          box-shadow: 0 10px 30px rgba(25, 25, 24, 0.08), 0 1px 3px rgba(25, 25, 24, 0.02);
+          padding: 6px;
+          min-width: 180px;
           z-index: 1001;
           display: flex;
           flex-direction: column;
+          gap: 2px;
         }
 
         .navbar__dropdown-item-link {
-          padding: 8px 16px;
-          font-size: 0.8rem;
+          padding: 10px 16px;
+          font-size: 0.85rem;
           font-family: var(--font-body);
-          color: var(--color-text);
+          font-weight: 500;
+          color: var(--color-text) !important;
           text-decoration: none;
-          transition: background var(--transition-fast);
+          border-radius: var(--radius-sm);
+          transition: all var(--transition-fast);
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          gap: 8px;
+          width: 100%;
+          opacity: 1 !important;
+          box-sizing: border-box;
         }
 
         .navbar__dropdown-item-link:hover {
           background: var(--color-bg-offwhite);
+          color: var(--color-text) !important;
+          opacity: 1 !important;
         }
 
         .navbar__dropdown-item {
@@ -300,16 +343,24 @@ export default function Navbar() {
           text-align: left;
           background: none;
           border: none;
-          padding: 8px 16px;
-          font-size: 0.8rem;
+          padding: 10px 16px;
+          font-size: 0.85rem;
           font-family: var(--font-body);
-          color: #ea4335;
+          font-weight: 500;
+          color: #ea4335 !important;
           cursor: pointer;
-          transition: background var(--transition-fast);
+          border-radius: var(--radius-sm);
+          transition: all var(--transition-fast);
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          gap: 8px;
+          box-sizing: border-box;
         }
 
         .navbar__dropdown-item:hover {
-          background: var(--color-bg-offwhite);
+          background: #fdf3f3;
+          color: #ea4335 !important;
         }
 
         .navbar__cta-mobile {

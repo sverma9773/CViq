@@ -28,6 +28,8 @@ import {
   calculateMatchScore
 } from "../lib/jobTrackerStore";
 import { useAuth } from "../context/AuthContext";
+import ProBadge from "../components/ProBadge";
+import ProUpgradeModal from "../components/ProUpgradeModal";
 import { collection, getDocs, query, orderBy, doc, setDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 
@@ -67,6 +69,8 @@ export default function DashboardPage() {
   const [loaderMessage, setLoaderMessage] = useState("Firing up CViq neural scanners...");
   const fileInputRef = useRef(null);
   const menuRef = useRef(null);
+  const accountDropdownRef = useRef(null);
+  const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -94,94 +98,50 @@ export default function DashboardPage() {
     return () => clearInterval(interval);
   }, [importing]);
 
-  const { user } = useAuth();
+  const { user, isPro, logOut } = useAuth();
+  const [showProModal, setShowProModal] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
       if (user) {
-        // Resumes loading & migration
+        // Resumes loading - STRICTLY from Firestore
         let finalResumes = [];
         try {
           const q = query(collection(db, "users", user.uid, "resumes"), orderBy("updatedAt", "desc"));
           const snapshot = await getDocs(q);
-          const cloudResumes = snapshot.docs.map(doc => doc.data());
-          if (cloudResumes.length > 0) {
-            finalResumes = cloudResumes;
-          } else {
-            // First time migration: sync existing local resumes to cloud
-            const localResumes = getAllResumes();
-            for (const r of localResumes) {
-              try {
-                const docRef = doc(db, "users", user.uid, "resumes", r.id);
-                await setDoc(docRef, r);
-              } catch (e) {
-                console.error("Migration failed for resume:", r.id, e);
-              }
-            }
-            finalResumes = localResumes;
-          }
+          finalResumes = snapshot.docs.map(doc => doc.data());
         } catch (err) {
           console.error("Failed to load cloud resumes:", err);
-          finalResumes = getAllResumes();
         }
         setResumes(finalResumes);
 
-        // Cover letters loading & migration
+        // Cover letters loading - STRICTLY from Firestore
         let finalCoverLetters = [];
         try {
           const q = collection(db, "users", user.uid, "coverLetters");
           const snapshot = await getDocs(q);
           const cloudCoverLetters = snapshot.docs.map(doc => doc.data());
-          if (cloudCoverLetters.length > 0) {
-            cloudCoverLetters.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-            finalCoverLetters = cloudCoverLetters;
-          } else {
-            // First time migration: sync existing local cover letters to cloud
-            const localLetters = getAllCoverLetters();
-            for (const l of localLetters) {
-              try {
-                const docRef = doc(db, "users", user.uid, "coverLetters", l.id);
-                await setDoc(docRef, l);
-              } catch (e) {
-                console.error("Migration failed for cover letter:", l.id, e);
-              }
-            }
-            finalCoverLetters = localLetters;
-          }
+          cloudCoverLetters.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+          finalCoverLetters = cloudCoverLetters;
         } catch (err) {
           console.error("Failed to load cloud cover letters:", err);
-          finalCoverLetters = getAllCoverLetters();
         }
         setCoverLetters(finalCoverLetters);
 
-        // Job Tracker Applications loading & migration
+        // Job Tracker Applications loading - STRICTLY from Firestore
         let finalApplications = [];
         try {
           const q = collection(db, "users", user.uid, "applications");
           const snapshot = await getDocs(q);
           const cloudApps = snapshot.docs.map(doc => doc.data());
-          if (cloudApps.length > 0) {
-            cloudApps.sort((a, b) => new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime());
-            finalApplications = cloudApps;
-          } else {
-            // First time migration: sync existing local applications to cloud
-            const localApps = getAllApplications();
-            for (const app of localApps) {
-              try {
-                const docRef = doc(db, "users", user.uid, "applications", app.id);
-                await setDoc(docRef, app);
-              } catch (e) {
-                console.error("Migration failed for application:", app.id, e);
-              }
-            }
-            finalApplications = localApps;
-          }
+          cloudApps.sort((a, b) => new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime());
+          finalApplications = cloudApps;
         } catch (err) {
           console.error("Failed to load cloud applications:", err);
-          finalApplications = getAllApplications();
         }
         setApplications(finalApplications);
       } else {
+        // Guest workspace loads local storage data
         setResumes(getAllResumes());
         setCoverLetters(getAllCoverLetters());
         setApplications(getAllApplications());
@@ -191,11 +151,14 @@ export default function DashboardPage() {
     loadData();
   }, [user]);
 
-  // Close menu on outside click
+  // Close menus on outside click
   useEffect(() => {
     const handler = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setMenuOpen(null);
+      }
+      if (accountDropdownRef.current && !accountDropdownRef.current.contains(e.target)) {
+        setAccountDropdownOpen(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -203,6 +166,10 @@ export default function DashboardPage() {
   }, []);
 
   const handleCreate = async () => {
+    if (!isPro && resumes.length >= 1) {
+      setShowProModal(true);
+      return;
+    }
     const newResume = createResume("Untitled Resume");
     if (user) {
       try {
@@ -221,6 +188,10 @@ export default function DashboardPage() {
   };
 
   const handleCreateCoverLetter = async () => {
+    if (!isPro && coverLetters.length >= 1) {
+      setShowProModal(true);
+      return;
+    }
     const newLetter = createCoverLetter("Untitled Cover Letter");
     if (user) {
       try {
@@ -340,6 +311,10 @@ export default function DashboardPage() {
 
   const handleDuplicate = async (id) => {
     if (id.startsWith("coverletter_")) {
+      if (!isPro && coverLetters.length >= 1) {
+        setShowProModal(true);
+        return;
+      }
       const dup = duplicateCoverLetter(id);
       if (dup) {
         if (user) {
@@ -366,6 +341,10 @@ export default function DashboardPage() {
         }
       }
     } else {
+      if (!isPro && resumes.length >= 1) {
+        setShowProModal(true);
+        return;
+      }
       const dup = duplicateResume(id);
       if (dup) {
         if (user) {
@@ -741,10 +720,51 @@ export default function DashboardPage() {
         </nav>
 
         <div className="dashboard__sidebar-bottom">
-          <button className="dashboard__nav-item">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="3" stroke="currentColor" strokeWidth="1.3" /><path d="M2.5 14c0-3 2.46-5.5 5.5-5.5s5.5 2.5 5.5 5.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
-            My Account
-          </button>
+          {!isPro && (
+            <button className="dashboard__nav-item" onClick={() => setShowProModal(true)} style={{ color: "var(--color-accent)", fontWeight: "600", marginBottom: "8px" }}>
+              <ClaudeSparkleSmall size={14} color="var(--color-accent)" />
+              Upgrade to Pro
+            </button>
+          )}
+          <div className="dashboard__account-wrapper" ref={accountDropdownRef}>
+            <button 
+              className={`dashboard__nav-item ${accountDropdownOpen ? "dashboard__nav-item--active" : ""}`}
+              onClick={() => setAccountDropdownOpen(!accountDropdownOpen)}
+              style={{ width: "100%", display: "flex", alignItems: "center" }}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="3" stroke="currentColor" strokeWidth="1.3" /><path d="M2.5 14c0-3 2.46-5.5 5.5-5.5s5.5 2.5 5.5 5.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
+              <span style={{ marginRight: "4px" }}>My Account</span>
+              {isPro && <ProBadge />}
+              <svg className={`dashboard__arrow ${accountDropdownOpen ? "dashboard__arrow--open" : ""}`} width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ marginLeft: "auto" }}>
+                <path d="M2.5 4L5 6.5L7.5 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+
+            {accountDropdownOpen && (
+              <div className="dashboard__account-dropdown">
+                {!isPro && (
+                  <button 
+                    type="button"
+                    className="dashboard__dropdown-item" 
+                    onClick={() => { setShowProModal(true); setAccountDropdownOpen(false); }}
+                  >
+                    Upgrade to Pro
+                  </button>
+                )}
+                <button 
+                  type="button"
+                  onClick={async () => { 
+                    await logOut(); 
+                    setAccountDropdownOpen(false); 
+                    window.location.href = "/"; 
+                  }} 
+                  className="dashboard__dropdown-item dashboard__dropdown-item--signout"
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </aside>
 
@@ -1554,6 +1574,10 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {showProModal && (
+        <ProUpgradeModal onClose={() => setShowProModal(false)} />
+      )}
+
       <style jsx>{`
         .dashboard {
           display: flex;
@@ -1653,6 +1677,94 @@ export default function DashboardPage() {
 
         .dashboard__sidebar-bottom {
           margin-top: auto;
+          position: relative;
+        }
+
+        .dashboard__account-wrapper {
+          position: relative;
+          width: 100%;
+        }
+
+        .dashboard__account-dropdown {
+          position: absolute;
+          bottom: calc(100% + 8px);
+          left: 0;
+          right: 0;
+          background: var(--color-bg);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-lg);
+          box-shadow: 0 10px 30px rgba(25, 25, 24, 0.08), 0 1px 3px rgba(25, 25, 24, 0.02);
+          padding: 6px;
+          z-index: 100;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .dashboard__dropdown-item-link {
+          padding: 10px 16px;
+          font-size: 0.85rem;
+          font-family: var(--font-body);
+          font-weight: 500;
+          color: var(--color-text) !important;
+          text-decoration: none;
+          border-radius: var(--radius-sm);
+          transition: all var(--transition-fast);
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          gap: 8px;
+          width: 100%;
+          opacity: 1 !important;
+          box-sizing: border-box;
+        }
+
+        .dashboard__dropdown-item-link:hover {
+          background: var(--color-bg-offwhite);
+          color: var(--color-text) !important;
+          opacity: 1 !important;
+        }
+
+        .dashboard__dropdown-item {
+          width: 100%;
+          text-align: left;
+          background: none;
+          border: none;
+          padding: 10px 16px;
+          font-size: 0.85rem;
+          font-family: var(--font-body);
+          font-weight: 500;
+          color: var(--color-text) !important;
+          cursor: pointer;
+          border-radius: var(--radius-sm);
+          transition: all var(--transition-fast);
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          gap: 8px;
+          box-sizing: border-box;
+        }
+
+        .dashboard__dropdown-item:hover {
+          background: var(--color-bg-offwhite);
+          color: var(--color-text) !important;
+        }
+
+        .dashboard__dropdown-item--signout {
+          color: #ea4335 !important;
+        }
+
+        .dashboard__dropdown-item--signout:hover {
+          background: #fdf3f3;
+          color: #ea4335 !important;
+        }
+
+        .dashboard__arrow {
+          transition: transform var(--transition-fast);
+        }
+
+        .dashboard__arrow--open {
+          transform: rotate(180deg);
         }
 
         /* ── Main Content ────────────── */
