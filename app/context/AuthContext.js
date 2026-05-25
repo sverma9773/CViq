@@ -103,7 +103,7 @@ export function AuthContextProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ user, loading, signInWithGoogle, logOut, isAuthModalOpen, setAuthModalOpen, isPro, refreshProStatus }}>
-      {!loading ? children : <div className="min-h-screen flex items-center justify-center">Loading...</div>}
+      {children}
     </AuthContext.Provider>
   );
 }

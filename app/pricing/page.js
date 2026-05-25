@@ -141,8 +141,8 @@ export default function PricingPage() {
       const options = {
         key: orderData.keyId,
         subscription_id: orderData.subscriptionId,
-        name: "CViq Resume Maker",
-        description: `CViq Pro - ${billingPeriod === "monthly" ? "Monthly" : "Yearly"} Subscription`,
+        name: "CViqly Resume Maker",
+        description: `CViqly Pro - ${billingPeriod === "monthly" ? "Monthly" : "Yearly"} Subscription`,
         handler: async function (response) {
           try {
             const verifyRes = await fetch("/api/razorpay/verify-payment", {
@@ -272,7 +272,7 @@ export default function PricingPage() {
             {/* Pro Plan */}
             <div className="pricing__card pricing__card--featured">
               <div className="pricing__card-tag">Most Popular</div>
-              <h3 className="pricing__card-title">CViq Pro</h3>
+              <h3 className="pricing__card-title">CViqly Pro</h3>
               <div className="pricing__price-block">
                 <span className="pricing__currency">₹</span>
                 <span className="pricing__price">

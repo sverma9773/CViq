@@ -72,8 +72,7 @@ export default function HeroSection() {
           </h1>
 
           <p className="hero__subtitle">
-            Create professional, ATS-friendly resumes with our intuitive editor.
-            No sign-up required. No watermarks. Just beautiful resumes.
+            Create professional resumes in minutes with our intuitive free AI resume builder and online CV maker. Check your ATS resume score instantly, access modern templates, and export watermark-free PDFs to stand out to employers.
           </p>
 
           <div className="hero__actions">
@@ -151,11 +150,11 @@ export default function HeroSection() {
         <div className="container hero__partners-container">
           <span className="hero__partners-title">Trusted by candidates hired at leading firms</span>
           <div className="hero__partners-logos">
-            <img src="https://1000logos.net/wp-content/uploads/2020/04/ernst-young-ey-logo-1536x1282.png" alt="EY" className="hero__partner-img hero__partner-img--ey" title="EY" />
-            <img src="https://1000logos.net/wp-content/uploads/2021/05/PwC-logo-1536x864.png" alt="PwC" className="hero__partner-img hero__partner-img--pwc" title="PwC" />
-            <img src="https://1000logos.net/wp-content/uploads/2023/03/KPMG-logo-1536x864.png" alt="KPMG" className="hero__partner-img hero__partner-img--kpmg" title="KPMG" />
-            <img src="https://1000logos.net/wp-content/uploads/2021/05/Google-logo-1536x864.png" alt="Google" className="hero__partner-img hero__partner-img--google" title="Google" />
-            <img src="https://1000logos.net/wp-content/uploads/2017/04/Microsoft-Logo.png" alt="Microsoft" className="hero__partner-img hero__partner-img--microsoft" title="Microsoft" />
+            <img src="https://1000logos.net/wp-content/uploads/2020/04/ernst-young-ey-logo-1536x1282.png" alt="EY" className="hero__partner-img hero__partner-img--ey" title="EY" height="32" width="38" loading="lazy" />
+            <img src="https://1000logos.net/wp-content/uploads/2021/05/PwC-logo-1536x864.png" alt="PwC" className="hero__partner-img hero__partner-img--pwc" title="PwC" height="32" width="57" loading="lazy" />
+            <img src="https://1000logos.net/wp-content/uploads/2023/03/KPMG-logo-1536x864.png" alt="KPMG" className="hero__partner-img hero__partner-img--kpmg" title="KPMG" height="30" width="53" loading="lazy" />
+            <img src="https://1000logos.net/wp-content/uploads/2021/05/Google-logo-1536x864.png" alt="Google" className="hero__partner-img hero__partner-img--google" title="Google" height="48" width="85" loading="lazy" />
+            <img src="https://1000logos.net/wp-content/uploads/2017/04/Microsoft-Logo.png" alt="Microsoft" className="hero__partner-img hero__partner-img--microsoft" title="Microsoft" height="42" width="91" loading="lazy" />
           </div>
         </div>
       </div>

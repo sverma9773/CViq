@@ -16,11 +16,11 @@ export async function POST(req) {
 
     // 1. Define plan properties based on billing period
     const isMonthly = billingPeriod === "monthly";
-    const planName = isMonthly ? "CViq Pro Monthly Plan" : "CViq Pro Yearly Plan";
+    const planName = isMonthly ? "CViqly Pro Monthly Plan" : "CViqly Pro Yearly Plan";
     const planAmount = isMonthly ? 149 * 100 : 999 * 100; // in paise
     const planDescription = isMonthly 
-      ? "Recurring monthly access to all CViq Pro features" 
-      : "Recurring yearly access to all CViq Pro features";
+      ? "Recurring monthly access to all CViqly Pro features" 
+      : "Recurring yearly access to all CViqly Pro features";
 
     // 2. Create the plan dynamically in Razorpay
     const plan = await razorpay.plans.create({

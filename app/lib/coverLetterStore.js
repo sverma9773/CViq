@@ -2,7 +2,7 @@
  * Cover Letter Store — localStorage-based management for professional cover letters.
  */
 
-const STORAGE_KEY = "cviq_coverletters";
+const STORAGE_KEY = "cviqly_coverletters";
 
 const emptyCoverLetterData = {
   profile: { fullName: "", jobTitle: "", email: "", phone: "", location: "" },
@@ -61,11 +61,18 @@ export function getAllCoverLetters() {
   try {
     let raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      // Fallback migration
-      const legacyRaw = localStorage.getItem("resumeforge_coverletters");
-      if (legacyRaw) {
-        localStorage.setItem(STORAGE_KEY, legacyRaw);
-        raw = legacyRaw;
+      // Fallback migration from older "cviq_coverletters" key
+      const legacyCviq = localStorage.getItem("cviq_coverletters");
+      if (legacyCviq) {
+        localStorage.setItem(STORAGE_KEY, legacyCviq);
+        raw = legacyCviq;
+      } else {
+        // Fallback migration from older "resumeforge_coverletters" key
+        const legacyRaw = localStorage.getItem("resumeforge_coverletters");
+        if (legacyRaw) {
+          localStorage.setItem(STORAGE_KEY, legacyRaw);
+          raw = legacyRaw;
+        }
       }
     }
     if (!raw) {
@@ -112,7 +119,10 @@ export function createCoverLetter(name = "Untitled Cover Letter") {
   };
   // Automatically pre-fill sender details if a resume profile exists!
   try {
-    let resumes = localStorage.getItem("cviq_resumes");
+    let resumes = localStorage.getItem("cviqly_resumes");
+    if (!resumes) {
+      resumes = localStorage.getItem("cviq_resumes");
+    }
     if (!resumes) {
       resumes = localStorage.getItem("resumeforge_resumes");
     }

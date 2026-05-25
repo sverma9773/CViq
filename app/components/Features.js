@@ -5,27 +5,27 @@ import { ClaudeCheck, ClaudeSparkleSmall } from "./ClaudeIcon";
 const features = [
   {
     title: "Free Forever",
-    description: "Your first resume is completely free. No trial period, no credit card, no hidden fees.",
+    description: "Build your first resume completely free. Try our premium free resume builder with no credit card or hidden fees.",
   },
   {
     title: "No Watermarks",
-    description: "Your resume is your place to shine. We never brand or watermark your documents.",
+    description: "We believe in professional integrity. Our resume maker online exports watermark-free CVs ready for employers.",
   },
   {
     title: "Unlimited Downloads",
-    description: "Download your resume as many times as you need. There are no download limits.",
+    description: "Download your PDF layouts as many times as needed to adjust details for different application guidelines.",
   },
   {
     title: "ATS-Friendly Templates",
-    description: "Clean, text-based PDFs that pass through Applicant Tracking Systems effortlessly.",
+    description: "Get clean, machine-readable text structures designed specifically to satisfy ATS resume checker metrics.",
   },
   {
     title: "Real-Time Preview",
-    description: "See your changes instantly as you type. What you see is exactly what you'll get.",
+    description: "Audit visual design modifications instantly side-by-side using our high-fidelity layout engine.",
   },
   {
     title: "Privacy First",
-    description: "Your data stays yours. We don't share personal information and you can delete it anytime.",
+    description: "We put candidates first. Your personal and career history remains secure in local browser database storage.",
   },
 ];
 

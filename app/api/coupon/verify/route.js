@@ -10,7 +10,7 @@ export async function POST(req) {
 
     const formattedCode = couponCode.trim().toUpperCase();
 
-    if (formattedCode === "CVIQ100") {
+    if (formattedCode === "CVIQLY100") {
       return NextResponse.json({
         success: true,
         discountPercent: 100,

@@ -7,7 +7,7 @@ const testimonials = [
   {
     name: "Priya Sharma",
     role: "Software Engineer",
-    text: "CViq made creating my resume incredibly simple. The real-time preview is a game-changer — I could see exactly how my resume would look as I typed.",
+    text: "CViqly made creating my resume incredibly simple. The real-time preview is a game-changer — I could see exactly how my resume would look as I typed.",
   },
   {
     name: "Alex Johnson",
@@ -48,7 +48,7 @@ export default function Testimonials() {
       <div className="container">
         <div className="section-header">
           <h2>Loved by job seekers worldwide</h2>
-          <p>See what our users have to say about CViq</p>
+          <p>See what our users have to say about CViqly</p>
         </div>
 
         <div className="testimonials__carousel">

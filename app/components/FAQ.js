@@ -5,14 +5,14 @@ import { ClaudePlus } from "./ClaudeIcon";
 
 const faqs = [
   {
-    question: "Is CViq really free?",
+    question: "Is CViqly really free?",
     answer:
       "Yes! Your first resume is 100% free forever. No trial period, no credit card required, and no auto-upgrades. You can create, edit, and download your resume as many times as you want.",
   },
   {
     question: "Are the resumes ATS-friendly?",
     answer:
-      "Absolutely. CViq exports clean, text-based PDFs with embedded fonts and a simple structure that Applicant Tracking Systems can read without any issues. Focus on clear headings, relevant keywords, and impact-focused bullet points.",
+      "Absolutely. CViqly exports clean, text-based PDFs with embedded fonts and a simple structure that Applicant Tracking Systems can read without any issues. Focus on clear headings, relevant keywords, and impact-focused bullet points.",
   },
   {
     question: "Can I download my resume as a PDF?",
@@ -33,6 +33,21 @@ const faqs = [
     question: "Is my data safe?",
     answer:
       "Yes. Your resume data is stored locally in your browser using localStorage. We don't send your personal data to any server, and you can delete it anytime by clearing your browser data.",
+  },
+  {
+    question: "How does the built-in ATS resume checker calculate my score?",
+    answer:
+      "Our advanced ATS resume checker analyzes your resume content against common hiring algorithms. It audits key features like keyword density, structural layout, heading hierarchies, contact details, and standard font compatibility. Once checked, it outputs an interactive resume score and an actionable optimization list to maximize compatibility before you submit your application.",
+  },
+  {
+    question: "How does CViqly optimize resumes for AI search & Answer Engines (AEO & GEO)?",
+    answer:
+      "With the rise of generative AI search engines and AI recruiters, Answer Engine Optimization (AEO) and Generative Engine Optimization (GEO) are critical. CViqly is built specifically to address this shift. By exporting structured, machine-readable text and clean headings, we ensure that AI-driven parsers and search bots can seamlessly interpret, catalog, and query your credentials, boosting your search visibility.",
+  },
+  {
+    question: "Why should I use an online AI resume builder instead of Word or Canva?",
+    answer:
+      "Many visual editors like Canva export resumes as flat image sheets or contain complex overlapping text grids that confuse Applicant Tracking Systems (ATS) and search engine web crawlers. CViqly utilizes structured, semantic layouts and standard PDF fonts, guaranteeing that indexing bots and candidate database crawlers can read 100% of your career experience and skill keywords.",
   },
 ];
 

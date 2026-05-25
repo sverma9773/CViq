@@ -11,7 +11,7 @@ export default function Footer() {
           <div className="footer__brand">
             <Link href="/" className="footer__logo">
               <span className="logo-title-wrap">
-                <span className="logo-brand">CViq</span>
+                <span className="logo-brand">CViqly</span>
                 <span className="logo-separator">|</span>
                 <span className="logo-tagline">Resume Maker</span>
               </span>
@@ -46,7 +46,7 @@ export default function Footer() {
         </div>
 
         <div className="footer__bottom">
-          <p>&copy; {new Date().getFullYear()} CViq. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} CViqly. All rights reserved.</p>
           <p className="footer__powered">
             Built with the Claude Design System
           </p>

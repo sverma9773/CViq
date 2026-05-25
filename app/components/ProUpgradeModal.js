@@ -128,8 +128,8 @@ export default function ProUpgradeModal({ onClose }) {
       const options = {
         key: subData.keyId,
         subscription_id: subData.subscriptionId,
-        name: "CViq Resume Maker",
-        description: `CViq Pro - ${billingPeriod === "monthly" ? "Monthly" : "Yearly"} Subscription`,
+        name: "CViqly Resume Maker",
+        description: `CViqly Pro - ${billingPeriod === "monthly" ? "Monthly" : "Yearly"} Subscription`,
         handler: async function (response) {
           try {
             const verifyRes = await fetch("/api/razorpay/verify-payment", {
@@ -185,7 +185,7 @@ export default function ProUpgradeModal({ onClose }) {
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <ClaudeSparkleSmall size={22} color="#da7756" className="spin-slow" />
-          <h2 className="modal-title">Upgrade to CViq Pro</h2>
+          <h2 className="modal-title">Upgrade to CViqly Pro</h2>
           <p className="modal-subtitle">
             You've hit the free tier creation limit. Go Pro to unleash your resume's full potential.
           </p>

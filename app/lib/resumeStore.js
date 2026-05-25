@@ -3,7 +3,7 @@
  * Each resume has: id, name, createdAt, updatedAt, data (the actual resume content)
  */
 
-const STORAGE_KEY = "cviq_resumes";
+const STORAGE_KEY = "cviqly_resumes";
 
 const emptyResumeData = {
   profile: { fullName: "", jobTitle: "", email: "", phone: "", location: "", photoUrl: "", summary: "" },
@@ -46,11 +46,18 @@ export function getAllResumes() {
   try {
     let raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      // Fallback migration from older "resumeforge_resumes" key
-      const legacyRaw = localStorage.getItem("resumeforge_resumes");
-      if (legacyRaw) {
-        localStorage.setItem(STORAGE_KEY, legacyRaw);
-        raw = legacyRaw;
+      // Fallback migration from older "cviq_resumes" key
+      const legacyCviq = localStorage.getItem("cviq_resumes");
+      if (legacyCviq) {
+        localStorage.setItem(STORAGE_KEY, legacyCviq);
+        raw = legacyCviq;
+      } else {
+        // Fallback migration from older "resumeforge_resumes" key
+        const legacyRaw = localStorage.getItem("resumeforge_resumes");
+        if (legacyRaw) {
+          localStorage.setItem(STORAGE_KEY, legacyRaw);
+          raw = legacyRaw;
+        }
       }
     }
     if (!raw) {

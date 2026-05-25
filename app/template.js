@@ -10,7 +10,7 @@ export default function Template({ children }) {
   }, []);
 
   return (
-    <div className={`cviq-page-wrapper ${isMounted ? "cviq-page-wrapper--active" : ""}`}>
+    <div className={`cviqly-page-wrapper ${isMounted ? "cviqly-page-wrapper--active" : ""}`}>
       {children}
     </div>
   );

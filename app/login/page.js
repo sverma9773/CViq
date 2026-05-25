@@ -57,7 +57,7 @@ export default function LoginPage() {
 
         <Link href="/" className="logo-link">
           <span className="logo-title-wrap">
-            <span className="logo-brand">CViq</span>
+            <span className="logo-brand">CViqly</span>
             <span className="logo-separator">|</span>
             <span className="logo-tagline">Resume Maker</span>
           </span>

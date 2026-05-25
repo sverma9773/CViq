@@ -228,7 +228,7 @@ export default function ResumePreview() {
             }}
           >
             {/* Page number badge in the corner of the sheet */}
-            <div className="cviq-page-number-indicator">
+            <div className="cviqly-page-number-indicator">
               Page {pageIdx + 1} of {paginatedPages.length}
             </div>
 
@@ -353,7 +353,7 @@ export default function ResumePreview() {
       {/* ─── HIDDEN SANDBOX FOR REAL-TIME MEASUREMENTS ─── */}
       <div
         ref={sandboxRef}
-        className="cviq-sandbox"
+        className="cviqly-sandbox"
         style={{
           position: "absolute",
           top: "-9999px",
@@ -481,7 +481,7 @@ export default function ResumePreview() {
         .preview-paper:hover {
           box-shadow: 0 12px 40px rgba(25,25,24,0.1);
         }
-        .cviq-page-number-indicator {
+        .cviqly-page-number-indicator {
           position: absolute;
           top: 14px;
           right: 18px;

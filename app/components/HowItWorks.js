@@ -6,22 +6,22 @@ const steps = [
   {
     number: "1",
     title: "Choose a template",
-    description: "Select from our collection of professionally designed, ATS-friendly resume templates.",
+    description: "Select from our collection of professionally designed, ATS-friendly resume templates optimized for search engine scanners.",
   },
   {
     number: "2",
     title: "Add your experience",
-    description: "Fill in your details — education, work experience, skills, and certificates.",
+    description: "Fill in your career details—education, work history, skills, and accomplishments—using our intuitive CV builder.",
   },
   {
     number: "3",
     title: "Customize layout & design",
-    description: "Adjust colors, fonts, and layout until your resume perfectly represents you.",
+    description: "Fine-tune formatting parameters inside our online resume maker until the final document perfectly reflects your personal brand.",
   },
   {
     number: "4",
     title: "Download unlimited PDFs",
-    description: "Download your polished resume as a high-quality PDF, ready to submit anywhere.",
+    description: "Download your polished, high-fidelity resume as an ATS-compliant PDF, ready to secure job interviews.",
   },
 ];
 

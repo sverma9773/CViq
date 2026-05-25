@@ -117,17 +117,24 @@ export function calculateMatchScore(resumeData, jdText) {
   };
 }
 
-const STORAGE_KEY = "cviq_jobtracker_applications";
+const STORAGE_KEY = "cviqly_jobtracker_applications";
 
 export function getAllApplications() {
   if (typeof window === "undefined") return [];
   let stored = localStorage.getItem(STORAGE_KEY);
   if (!stored) {
-    // Fallback migration
-    const legacyRaw = localStorage.getItem("resumeforge_jobtracker_applications");
-    if (legacyRaw) {
-      localStorage.setItem(STORAGE_KEY, legacyRaw);
-      stored = legacyRaw;
+    // Fallback migration from older "cviq_jobtracker_applications" key
+    const legacyCviq = localStorage.getItem("cviq_jobtracker_applications");
+    if (legacyCviq) {
+      localStorage.setItem(STORAGE_KEY, legacyCviq);
+      stored = legacyCviq;
+    } else {
+      // Fallback migration from older "resumeforge_jobtracker_applications" key
+      const legacyRaw = localStorage.getItem("resumeforge_jobtracker_applications");
+      if (legacyRaw) {
+        localStorage.setItem(STORAGE_KEY, legacyRaw);
+        stored = legacyRaw;
+      }
     }
   }
   if (!stored) {

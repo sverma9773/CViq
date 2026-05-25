@@ -59,7 +59,7 @@ export default function AuthModal({ isOpen: propIsOpen, onClose: propOnClose }) 
         <div className="modal-header">
           <div className="logo-container">
             <span className="logo-title-wrap">
-              <span className="logo-brand">CViq</span>
+              <span className="logo-brand">CViqly</span>
               <span className="logo-separator">|</span>
               <span className="logo-tagline">Resume Maker</span>
             </span>

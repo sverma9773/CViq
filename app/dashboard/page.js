@@ -66,7 +66,7 @@ export default function DashboardPage() {
   const [showImport, setShowImport] = useState(false);
   const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState("");
-  const [loaderMessage, setLoaderMessage] = useState("Firing up CViq neural scanners...");
+  const [loaderMessage, setLoaderMessage] = useState("Firing up CViqly neural scanners...");
   const fileInputRef = useRef(null);
   const menuRef = useRef(null);
   const accountDropdownRef = useRef(null);
@@ -77,7 +77,7 @@ export default function DashboardPage() {
     if (!importing) return;
 
     const messages = [
-      "Firing up CViq neural scanners...",
+      "Firing up CViqly neural scanners...",
       "Deconstructing your career history...",
       "Extracting those high-impact achievements...",
       "Formatting technical superpowers...",
@@ -518,7 +518,7 @@ export default function DashboardPage() {
               }
             };
             all[idx].updatedAt = Date.now();
-            localStorage.setItem("cviq_resumes", JSON.stringify(all));
+            localStorage.setItem("cviqly_resumes", JSON.stringify(all));
           }
           setShowLinkedIn(false);
           setLinkedInUrl("");
@@ -568,7 +568,7 @@ export default function DashboardPage() {
         all[idx].data = parsed;
         all[idx].name = parsed.profile.fullName;
         all[idx].updatedAt = Date.now();
-        localStorage.setItem("cviq_resumes", JSON.stringify(all));
+        localStorage.setItem("cviqly_resumes", JSON.stringify(all));
       }
 
       setTimeout(() => {
@@ -609,7 +609,7 @@ export default function DashboardPage() {
         all[idx].data = parsed || all[idx].data;
         all[idx].name = parsed ? parsed.profile.fullName : "LinkedIn Import";
         all[idx].updatedAt = Date.now();
-        localStorage.setItem("cviq_resumes", JSON.stringify(all));
+        localStorage.setItem("cviqly_resumes", JSON.stringify(all));
       }
 
       setTimeout(() => {
@@ -642,12 +642,12 @@ export default function DashboardPage() {
       } else {
         throw new Error("Unsupported file type. Please upload a PDF or DOCX file.");
       }
-      console.log("[CViq] Extracted text:", text);
+      console.log("[CViqly] Extracted text:", text);
       if (!text || text.trim().length < 10) {
         throw new Error("Could not extract text from the file. It may be scanned/image-based. Try a text-based PDF or DOCX.");
       }
       const parsed = parseResumeText(text);
-      console.log("[CViq] Parsed data:", parsed);
+      console.log("[CViqly] Parsed data:", parsed);
       if (!parsed) throw new Error("Could not structure the resume data. Try a different file format.");
       const resumeName = parsed.profile.fullName || file.name.replace(/\.[^.]+$/, "");
       const newResume = createResume(resumeName);
@@ -655,7 +655,7 @@ export default function DashboardPage() {
       const idx = all.findIndex(r => r.id === newResume.id);
       if (idx !== -1) {
         all[idx].data = parsed;
-        localStorage.setItem("cviq_resumes", JSON.stringify(all));
+        localStorage.setItem("cviqly_resumes", JSON.stringify(all));
       }
       
       // Enforce minimum 4.2s delay for highly-engaging creative parsing experience
@@ -683,7 +683,7 @@ export default function DashboardPage() {
         <div className="dashboard__logo-container">
           <Link href="/" className="dashboard__logo">
             <span className="logo-title-wrap">
-              <span className="logo-brand">CViq</span>
+              <span className="logo-brand">CViqly</span>
               <span className="logo-separator">|</span>
               <span className="logo-tagline">Resume Maker</span>
             </span>
@@ -2605,20 +2605,20 @@ export default function DashboardPage() {
       `}</style>
 
       {importing && (
-        <div className="cviq-loader-overlay">
-          <div className="cviq-loader-card">
-            <div className="cviq-loader-visual">
-              <div className="cviq-loader-glow-ring"></div>
-              <div className="cviq-loader-icon-wrap">
+        <div className="cviqly-loader-overlay">
+          <div className="cviqly-loader-card">
+            <div className="cviqly-loader-visual">
+              <div className="cviqly-loader-glow-ring"></div>
+              <div className="cviqly-loader-icon-wrap">
                 <ClaudeIcon size={32} color="var(--color-accent)" />
               </div>
             </div>
-            <div className="cviq-loader-content">
-              <h3 className="cviq-loader-title">CViq AI Resume Scanner</h3>
-              <div className="cviq-loader-progress-track">
-                <div className="cviq-loader-progress-bar"></div>
+            <div className="cviqly-loader-content">
+              <h3 className="cviqly-loader-title">CViqly AI Resume Scanner</h3>
+              <div className="cviqly-loader-progress-track">
+                <div className="cviqly-loader-progress-bar"></div>
               </div>
-              <p className="cviq-loader-message">{loaderMessage}</p>
+              <p className="cviqly-loader-message">{loaderMessage}</p>
             </div>
           </div>
         </div>

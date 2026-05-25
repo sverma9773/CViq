@@ -92,7 +92,7 @@ export default function EditorTopBar({ activeTab, onTabChange, resumeId, resumeN
           useCORS: true,
           backgroundColor: "#ffffff",
           logging: false,
-          ignoreElements: (el) => el.classList && el.classList.contains("cviq-page-number-indicator")
+          ignoreElements: (el) => el.classList && el.classList.contains("cviqly-page-number-indicator")
         });
 
         // Restore styles
@@ -336,7 +336,7 @@ export default function EditorTopBar({ activeTab, onTabChange, resumeId, resumeN
       <div className="topbar__left">
         <Link href="/dashboard" className="topbar__logo" id="editor-logo">
           <span className="logo-title-wrap">
-            <span className="logo-brand">CViq</span>
+            <span className="logo-brand">CViqly</span>
             <span className="logo-separator">|</span>
             <span className="logo-tagline">Resume Maker</span>
           </span>
