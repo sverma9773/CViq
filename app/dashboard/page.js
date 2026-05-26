@@ -1586,6 +1586,7 @@ export default function DashboardPage() {
         .dashboard {
           display: flex;
           min-height: 100vh;
+          min-height: 100dvh;
           background: var(--color-bg-offwhite);
         }
 
@@ -2252,7 +2253,7 @@ export default function DashboardPage() {
         @media (max-width: 768px) {
           .dashboard {
             flex-direction: column;
-            padding-bottom: 64px;
+            padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
           }
 
           .dashboard__sidebar {
@@ -2269,6 +2270,7 @@ export default function DashboardPage() {
             border-right: none;
             border-top: 1px solid var(--color-border);
             padding: 8px 6px;
+            padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
             background: var(--color-bg);
             box-shadow: 0 -2px 12px rgba(25,25,24,0.08);
           }

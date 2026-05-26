@@ -134,7 +134,9 @@ function EditorContent() {
       <style jsx>{`
         .editor-layout {
           display: flex; flex-direction: column;
-          height: 100vh; overflow: hidden; background: var(--color-bg);
+          height: 100vh;
+          height: 100dvh;
+          overflow: hidden; background: var(--color-bg);
         }
         .editor-body { flex: 1; display: flex; overflow: hidden; }
         .editor-preview { flex: 1; overflow: hidden; }
@@ -165,6 +167,7 @@ function EditorContent() {
             background: var(--color-bg);
             border-top: 1px solid var(--color-border);
             padding: 6px 16px;
+            padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
             gap: 8px;
             box-shadow: 0 -2px 12px rgba(25,25,24,0.08);
           }
@@ -194,7 +197,7 @@ function EditorContent() {
           }
 
           .editor-layout {
-            padding-bottom: 56px;
+            padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
           }
         }
       `}</style>
