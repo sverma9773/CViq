@@ -197,11 +197,21 @@ export default function RootLayout({ children }) {
     "@type": "WebSite",
     "name": "CViqly",
     "url": "https://cviqly.com",
+    "image": "https://cviqly.com/logo.png",
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://cviqly.com/search?q={search_term_string}",
       "query-input": "required name=search_term_string"
     }
+  };
+
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "CViqly",
+    "url": "https://cviqly.com",
+    "logo": "https://cviqly.com/logo.png",
+    "image": "https://cviqly.com/og-image.png"
   };
 
   return (
@@ -222,6 +232,10 @@ export default function RootLayout({ children }) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
       </head>
       <body>

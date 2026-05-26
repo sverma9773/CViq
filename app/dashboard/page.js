@@ -687,6 +687,7 @@ export default function DashboardPage() {
         <div className="dashboard__logo-container">
           <Link href="/" className="dashboard__logo">
             <span className="logo-title-wrap">
+              <img src="/logo.png" alt="CViqly Logo" width={24} height={24} style={{ objectFit: "contain", flexShrink: 0 }} />
               <span className="logo-brand">CViqly</span>
               <span className="logo-separator">|</span>
               <span className="logo-tagline">Resume Maker</span>

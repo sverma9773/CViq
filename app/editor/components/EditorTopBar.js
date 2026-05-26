@@ -336,6 +336,7 @@ export default function EditorTopBar({ activeTab, onTabChange, resumeId, resumeN
       <div className="topbar__left">
         <Link href="/dashboard" className="topbar__logo" id="editor-logo">
           <span className="logo-title-wrap">
+            <img src="/logo.png" alt="CViqly Logo" width={24} height={24} style={{ objectFit: "contain", flexShrink: 0 }} />
             <span className="logo-brand">CViqly</span>
             <span className="logo-separator">|</span>
             <span className="logo-tagline">Resume Maker</span>

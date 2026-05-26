@@ -38,6 +38,7 @@ export default function Navbar() {
       <div className="navbar__inner">
         <Link href="/" className="navbar__logo" id="logo-link">
           <span className="logo-title-wrap">
+            <img src="/logo.png" alt="CViqly Logo" width={24} height={24} style={{ objectFit: "contain", flexShrink: 0 }} />
             <span className="logo-brand">CViqly</span>
             <span className="logo-separator">|</span>
             <span className="logo-tagline">Resume Maker</span>
