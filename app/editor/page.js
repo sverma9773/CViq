@@ -14,6 +14,7 @@ import TemplateSelector from "./components/TemplateSelector";
 import AdvancedCustomization from "./components/AdvancedCustomization";
 import ATSChecker from "./components/ATSChecker";
 import { ClaudeSparkleSmall } from "../components/ClaudeIcon";
+import AISidebar, { SparkleBotIcon } from "./components/AISidebar";
 
 /* Customize tab — template picker + advanced options + live preview */
 function CustomizeView() {
@@ -66,6 +67,7 @@ function EditorContent() {
   const [atsScore, setAtsScore] = useState(null);
   const [highestStep, setHighestStep] = useState(1);
   const [mobileView, setMobileView] = useState("edit"); // "edit" or "preview"
+  const [isAIChatOpen, setIsAIChatOpen] = useState(false);
 
   // Update highest step when tab changes
   useEffect(() => {
@@ -73,7 +75,7 @@ function EditorContent() {
     if (activeTab === "ats-check" && highestStep < 3) setHighestStep(3);
   }, [activeTab, highestStep]);
 
-  const { user } = useAuth();
+  const { user, isPro } = useAuth();
 
   useEffect(() => {
     const loadResume = async () => {
@@ -150,6 +152,11 @@ function EditorContent() {
               <div className={`editor-preview ${mobileView === "preview" ? "editor-mobile-show" : "editor-mobile-hide-preview"}`}>
                 <ResumePreview />
               </div>
+              {isAIChatOpen && (
+                <div className="editor-sidebar-right-wrap">
+                  <AISidebar onClose={() => setIsAIChatOpen(false)} />
+                </div>
+              )}
             </>
           )}
 
@@ -187,7 +194,176 @@ function EditorContent() {
         )}
       </div>
 
+      {/* Floating AI Bot Action Button */}
+      <button 
+        className={`floating-ai-bot ${!isPro ? "floating-ai-bot--locked" : ""}`} 
+        onClick={() => setIsAIChatOpen(!isAIChatOpen)}
+        title={isPro ? "Toggle AI Coach Sidebar" : "Unlock AI Coach (Pro Feature)"}
+      >
+        {!isPro ? (
+          <span className="fab-lock-badge" title="Pro Feature">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+          </span>
+        ) : (
+          <span className="fab-online-dot"></span>
+        )}
+        <span className="fab-glow-ring"></span>
+        <SparkleBotIcon size={22} color="#ffffff" />
+      </button>
+
       <style jsx>{`
+        /* ── Right Sidebar Layout & Animations ────────────────── */
+        .editor-sidebar-right-wrap {
+          display: none;
+        }
+        @media (min-width: 769px) {
+          .editor-sidebar-right-wrap {
+            display: block;
+            height: 100%;
+            animation: sidebarSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+        }
+        @media (max-width: 768px) {
+          .editor-sidebar-right-wrap {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100000;
+            background: var(--color-bg);
+            display: flex;
+            flex-direction: column;
+            animation: sidebarSlideUpMobile 0.3s ease;
+          }
+        }
+
+        @keyframes sidebarSlideIn {
+          from { width: 0; opacity: 0; transform: translateX(20px); }
+          to { width: 360px; opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes sidebarSlideUpMobile {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
+
+        /* ── Floating AI Bot FAB ──────────────────────────────── */
+        .floating-ai-bot {
+          position: fixed;
+          bottom: 24px;
+          right: 24px;
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          border: none;
+          background: linear-gradient(135deg, #da7756 0%, #e8956f 100%);
+          color: #ffffff;
+          box-shadow: 0 8px 32px rgba(218, 119, 86, 0.3), 
+                      0 0 0 1px rgba(218, 119, 86, 0.1);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          animation: floatAnimation 3s ease-in-out infinite;
+        }
+
+        .floating-ai-bot:hover {
+          transform: scale(1.08) translateY(-2px);
+          box-shadow: 0 12px 40px rgba(218, 119, 86, 0.45), 
+                      0 0 0 1px rgba(218, 119, 86, 0.2);
+        }
+
+        .floating-ai-bot:active {
+          transform: scale(0.95) translateY(0);
+        }
+
+        .fab-glow-ring {
+          position: absolute;
+          inset: -4px;
+          border-radius: 50%;
+          border: 2px solid rgba(218, 119, 86, 0.2);
+          opacity: 0;
+          animation: ringPulse 2.5s cubic-bezier(0.25, 0, 0, 1) infinite;
+        }
+
+        .fab-online-dot {
+          position: absolute;
+          top: 2px;
+          right: 2px;
+          width: 11px;
+          height: 11px;
+          background-color: #4ade80;
+          border: 2px solid #ffffff;
+          border-radius: 50%;
+          box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5);
+          animation: greenPulse 2s infinite;
+          z-index: 2;
+        }
+
+        .fab-lock-badge {
+          position: absolute;
+          top: 2px;
+          right: 2px;
+          width: 16px;
+          height: 16px;
+          background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+          border: 1.5px solid #ffffff;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          z-index: 2;
+        }
+
+        .floating-ai-bot--locked {
+          background: linear-gradient(135deg, #8a8a8a 0%, #666666 100%);
+          box-shadow: 0 8px 32px rgba(102, 102, 102, 0.3), 
+                      0 0 0 1px rgba(102, 102, 102, 0.1);
+        }
+
+        .floating-ai-bot--locked:hover {
+          background: linear-gradient(135deg, #9a9a9a 0%, #777777 100%);
+          box-shadow: 0 12px 40px rgba(102, 102, 102, 0.45), 
+                      0 0 0 1px rgba(102, 102, 102, 0.2);
+        }
+
+        @keyframes floatAnimation {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-4px); }
+        }
+
+        @keyframes ringPulse {
+          0% { transform: scale(0.95); opacity: 0.8; }
+          100% { transform: scale(1.25); opacity: 0; }
+        }
+
+        @keyframes greenPulse {
+          0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+          70% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+        }
+
+        @media (max-width: 768px) {
+          .floating-ai-bot {
+            bottom: 84px; /* shift above the mobile toggle bar */
+            right: 16px;
+            width: 48px;
+            height: 48px;
+          }
+          
+          .floating-ai-bot svg {
+            width: 18px;
+            height: 18px;
+          }
+        }
+
         .editor-layout {
           display: flex; flex-direction: column;
           height: 100vh;

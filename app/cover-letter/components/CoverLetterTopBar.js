@@ -308,7 +308,7 @@ export default function CoverLetterTopBar({ activeTab, onTabChange, letterId, le
 
       <div className="topbar__tabs">
         {[
-          { key: "letter", label: "Step 1: Content", mobileLabel: "Content", step: 1 },
+          { key: "letter", label: "Step 1: Edit", mobileLabel: "Edit", step: 1 },
           { key: "customize", label: "Step 2: Customize", mobileLabel: "Style", step: 2 },
         ].map(({ key, label, mobileLabel, step }) => (
           <button
@@ -317,9 +317,9 @@ export default function CoverLetterTopBar({ activeTab, onTabChange, letterId, le
             onClick={() => onTabChange(key)}
           >
             {step === 1 ? (
-              <ClaudeCheck size={10} color={activeTab === key ? "#191918" : "#9b9b94"} />
+              <ClaudeCheck size={10} color={activeTab === key ? "#ffffff" : "#9b9b94"} />
             ) : (
-              <ClaudeSparkleSmall size={10} color={activeTab === key ? "#da7756" : "#9b9b94"} />
+              <ClaudeSparkleSmall size={10} color={activeTab === key ? "#ffffff" : "#9b9b94"} />
             )}
             <span className="topbar__tab-label-full">{label}</span>
             <span className="topbar__tab-label-short">{mobileLabel}</span>
@@ -456,8 +456,8 @@ export default function CoverLetterTopBar({ activeTab, onTabChange, letterId, le
         .topbar__tab:hover { color: var(--color-text-secondary); }
 
         .topbar__tab--active {
-          background: var(--color-bg); color: var(--color-text);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+          background: var(--color-accent); color: #ffffff;
+          box-shadow: 0 2px 6px rgba(218, 119, 86, 0.2);
         }
 
         .topbar__right { display: flex; align-items: center; gap: 12px; }

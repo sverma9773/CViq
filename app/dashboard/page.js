@@ -43,6 +43,7 @@ export default function DashboardPage() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [renameId, setRenameId] = useState(null);
   const [renameValue, setRenameValue] = useState("");
+  const [avatarError, setAvatarError] = useState(false);
 
   // Job Tracker Modal States
   const [showAddApp, setShowAddApp] = useState(false);
@@ -106,6 +107,7 @@ export default function DashboardPage() {
   const [showProModal, setShowProModal] = useState(false);
 
   useEffect(() => {
+    setAvatarError(false);
     const loadData = async () => {
       if (user) {
         // Resumes loading - STRICTLY from Firestore
@@ -737,8 +739,20 @@ export default function DashboardPage() {
               onClick={() => setAccountDropdownOpen(!accountDropdownOpen)}
               style={{ width: "100%", display: "flex", alignItems: "center" }}
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="3" stroke="currentColor" strokeWidth="1.3" /><path d="M2.5 14c0-3 2.46-5.5 5.5-5.5s5.5 2.5 5.5 5.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
-              <span style={{ marginRight: "4px" }}>My Account</span>
+              {user && user.photoURL && !avatarError ? (
+                <img 
+                  src={user.photoURL} 
+                  alt="Profile" 
+                  referrerPolicy="no-referrer"
+                  onError={() => setAvatarError(true)}
+                  style={{ width: "18px", height: "18px", borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} 
+                />
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="3" stroke="currentColor" strokeWidth="1.3" /><path d="M2.5 14c0-3 2.46-5.5 5.5-5.5s5.5 2.5 5.5 5.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
+              )}
+              <span style={{ marginRight: "4px" }}>
+                {user?.displayName ? `Hi, ${user.displayName.split(" ")[0]}` : "My Account"}
+              </span>
               {isPro && <ProBadge />}
               <svg className={`dashboard__arrow ${accountDropdownOpen ? "dashboard__arrow--open" : ""}`} width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ marginLeft: "auto" }}>
                 <path d="M2.5 4L5 6.5L7.5 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1593,8 +1607,8 @@ export default function DashboardPage() {
 
         /* ── Sidebar ─────────────────── */
         .dashboard__sidebar {
-          width: 220px;
-          min-width: 220px;
+          width: 260px;
+          min-width: 260px;
           background: var(--color-bg);
           border-right: 1px solid var(--color-border);
           display: flex;

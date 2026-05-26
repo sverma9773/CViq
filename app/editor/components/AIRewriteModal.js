@@ -246,8 +246,8 @@ export default function AIRewriteModal({ isOpen, onClose }) {
   const isEmpty = messages.length === 0;
 
   return (
-    <div className="ai-modal-overlay" onClick={onClose}>
-      <div className="ai-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="ai-modal-overlay">
+      <div className="ai-modal">
         {/* Header */}
         <div className="ai-modal__header">
           <div className="ai-modal__header-left">
@@ -258,13 +258,19 @@ export default function AIRewriteModal({ isOpen, onClose }) {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.5"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
+                <rect x="3" y="11" width="18" height="10" rx="2" />
+                <circle cx="8" cy="16" r="1" />
+                <circle cx="16" cy="16" r="1" />
+                <path d="M9 16a3 3 0 0 0 6 0" />
               </svg>
             </div>
             <div>
-              <h3 className="ai-modal__title">AI Resume Assistant</h3>
+              <h3 className="ai-modal__title">AI Career Assistant</h3>
               <p className="ai-modal__subtitle">Powered by Gemini AI</p>
             </div>
           </div>
@@ -435,35 +441,36 @@ export default function AIRewriteModal({ isOpen, onClose }) {
         </div>
 
         <style jsx>{`
-          /* ── Overlay ─────────────────────────────────────────── */
+          /* ── Overlay (Floating Right Chat Container) ────────── */
           .ai-modal-overlay {
             position: fixed;
-            inset: 0;
-            background: rgba(25, 25, 24, 0.5);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            bottom: 96px;
+            right: 24px;
             z-index: 10000;
-            animation: aiFadeIn 0.25s ease;
-            padding: 20px;
+            width: 380px;
+            height: 580px;
+            max-height: calc(100vh - 160px);
+            pointer-events: none; /* Let clicks pass through to editor behind */
           }
-
+ 
           .ai-modal {
             background: #ffffff;
             border: 1px solid var(--color-border);
-            border-radius: var(--radius-xl);
+            border-radius: var(--radius-lg);
             width: 100%;
-            max-width: 580px;
-            height: 70vh;
-            max-height: 680px;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 24px 80px rgba(25, 25, 24, 0.18),
+            box-shadow: 0 12px 40px rgba(25, 25, 24, 0.16),
               0 0 0 1px rgba(25, 25, 24, 0.04);
-            animation: aiSlideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: chatSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
             overflow: hidden;
+            pointer-events: auto; /* Enable clicks inside the chat panel */
+          }
+
+          @keyframes chatSlideIn {
+            from { opacity: 0; transform: translateY(24px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
           }
 
           /* ── Header ──────────────────────────────────────────── */
@@ -905,15 +912,27 @@ export default function AIRewriteModal({ isOpen, onClose }) {
           /* ── Mobile ──────────────────────────────────────────── */
           @media (max-width: 768px) {
             .ai-modal-overlay {
+              bottom: 0;
+              right: 0;
+              left: 0;
+              width: 100%;
+              height: 80vh;
+              max-height: 80vh;
+              pointer-events: auto; /* Block interaction under mobile drawer */
               padding: 0;
-              align-items: flex-end;
             }
-
+ 
             .ai-modal {
               max-width: 100%;
-              height: 85vh;
-              max-height: 85vh;
+              height: 100%;
               border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+              box-shadow: 0 -8px 24px rgba(25, 25, 24, 0.15);
+              animation: chatSlideUpMobile 0.3s ease;
+            }
+
+            @keyframes chatSlideUpMobile {
+              from { transform: translateY(100%); }
+              to { transform: translateY(0); }
             }
 
             .ai-chat__prompts {

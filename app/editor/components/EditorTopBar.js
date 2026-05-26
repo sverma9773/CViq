@@ -367,7 +367,7 @@ export default function EditorTopBar({ activeTab, onTabChange, resumeId, resumeN
 
       <div className="topbar__tabs">
         {[
-          { key: "resume", label: "Step 1: Content", mobileLabel: "Content", step: 1 },
+          { key: "resume", label: "Step 1: Edit", mobileLabel: "Edit", step: 1 },
           { key: "customize", label: "Step 2: Customize", mobileLabel: "Style", step: 2 },
           { key: "ats-check", label: "Step 3: ATS Check", mobileLabel: "ATS", step: 3 },
         ].map(({ key, label, mobileLabel, step }) => (
@@ -378,9 +378,9 @@ export default function EditorTopBar({ activeTab, onTabChange, resumeId, resumeN
             id={`tab-${key}`}
           >
             {step < 3 ? (
-              <ClaudeCheck size={10} color={activeTab === key ? "#191918" : "#9b9b94"} />
+              <ClaudeCheck size={10} color={activeTab === key ? "#ffffff" : "#9b9b94"} />
             ) : (
-              <ClaudeSparkleSmall size={10} color={activeTab === key ? "#da7756" : "#9b9b94"} />
+              <ClaudeSparkleSmall size={10} color={activeTab === key ? "#ffffff" : "#9b9b94"} />
             )}
             <span className="topbar__tab-label-full">{label}</span>
             <span className="topbar__tab-label-short">{mobileLabel}</span>
@@ -523,8 +523,8 @@ export default function EditorTopBar({ activeTab, onTabChange, resumeId, resumeN
         .topbar__tab:hover { color: var(--color-text-secondary); }
 
         .topbar__tab--active {
-          background: var(--color-bg); color: var(--color-text);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+          background: var(--color-accent); color: #ffffff;
+          box-shadow: 0 2px 6px rgba(218, 119, 86, 0.2);
         }
 
         .topbar__right { display: flex; align-items: center; gap: 12px; }

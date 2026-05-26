@@ -94,14 +94,6 @@ export default function AuthModal({ isOpen: propIsOpen, onClose: propOnClose }) 
           {isSigningIn ? "Signing in..." : "Continue with Google"}
         </button>
 
-        <button
-          onClick={() => { onClose(); router.push("/dashboard"); }}
-          disabled={isSigningIn}
-          className="guest-btn"
-        >
-          Continue as Guest (No Sign-Up)
-        </button>
-
         <div className="modal-footer-text">
           By continuing, you agree to our Terms of Service and Privacy Policy.
         </div>
@@ -244,7 +236,7 @@ export default function AuthModal({ isOpen: propIsOpen, onClose: propOnClose }) 
           cursor: pointer;
           transition: all 0.2s ease;
           box-shadow: 0 2px 4px rgba(25, 25, 24, 0.02);
-          margin-bottom: 12px;
+          margin-bottom: 24px;
         }
 
         .google-btn:hover:not(:disabled) {
@@ -256,30 +248,6 @@ export default function AuthModal({ isOpen: propIsOpen, onClose: propOnClose }) 
         .google-btn:disabled {
           opacity: 0.7;
           cursor: not-allowed;
-        }
-
-        .guest-btn {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 12px 20px;
-          background: transparent;
-          border: 1px dashed #eae6e2;
-          border-radius: 12px;
-          font-size: 0.9rem;
-          font-weight: 600;
-          color: #9b9b94;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          margin-bottom: 24px;
-        }
-
-        .guest-btn:hover {
-          background: #faf8f6;
-          border-color: #da7756;
-          color: #da7756;
-          transform: translateY(-1px);
         }
 
         .google-icon {
