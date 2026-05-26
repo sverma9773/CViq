@@ -20,7 +20,7 @@ export default function HeroSection() {
   const handleCtaClick = (e) => {
     e.preventDefault();
     if (user) {
-      router.push("/dashboard");
+      window.dispatchEvent(new CustomEvent("cviqly-navigate", { detail: { destination: "/dashboard" } }));
     } else {
       setAuthModalOpen(true);
     }

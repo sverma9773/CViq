@@ -73,6 +73,10 @@ export default function DashboardPage() {
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const router = useRouter();
 
+  const handleTransition = (url) => {
+    window.dispatchEvent(new CustomEvent("cviqly-navigate", { detail: { destination: url } }));
+  };
+
   useEffect(() => {
     if (!importing) return;
 
@@ -184,7 +188,7 @@ export default function DashboardPage() {
         console.error("Failed to sync new resume to Firestore:", e);
       }
     }
-    router.push(`/editor?id=${newResume.id}`);
+    handleTransition(`/editor?id=${newResume.id}`);
   };
 
   const handleCreateCoverLetter = async () => {
@@ -206,7 +210,7 @@ export default function DashboardPage() {
         console.error("Failed to sync new cover letter to Firestore:", e);
       }
     }
-    router.push(`/cover-letter/editor?id=${newLetter.id}`);
+    handleTransition(`/cover-letter/editor?id=${newLetter.id}`);
   };
 
   const handleAddAppSubmit = async () => {
@@ -522,7 +526,7 @@ export default function DashboardPage() {
           }
           setShowLinkedIn(false);
           setLinkedInUrl("");
-          router.push(`/editor?id=${newResume.id}`);
+          handleTransition(`/editor?id=${newResume.id}`);
         } else if (result.error === "linkedin_blocked") {
           setLinkedinResultState("blocked");
         } else {
@@ -575,7 +579,7 @@ export default function DashboardPage() {
         setLinkedinLoading(false);
         setShowLinkedIn(false);
         setLinkedInUrl("");
-        router.push(`/editor?id=${newResume.id}`);
+        handleTransition(`/editor?id=${newResume.id}`);
       }, 800);
 
     } catch (err) {
@@ -617,7 +621,7 @@ export default function DashboardPage() {
         setShowLinkedIn(false);
         setLinkedInUrl("");
         setLinkedinRawText("");
-        router.push(`/editor?id=${newResume.id}`);
+        handleTransition(`/editor?id=${newResume.id}`);
       }, 1000);
 
     } catch (err) {
@@ -664,7 +668,7 @@ export default function DashboardPage() {
       await new Promise(resolve => setTimeout(resolve, remainingTime));
 
       setShowImport(false);
-      router.push(`/editor?id=${newResume.id}`);
+      handleTransition(`/editor?id=${newResume.id}`);
     } catch (err) {
       console.error("Import failed:", err);
       setImportError(err.message || "Import failed. Please try again.");
@@ -815,7 +819,7 @@ export default function DashboardPage() {
                 <div className="dashboard__card" key={r.id}>
                   <div
                     className="dashboard__card-preview"
-                    onClick={() => router.push(`/editor?id=${r.id}`)}
+                    onClick={() => handleTransition(`/editor?id=${r.id}`)}
                   >
                     {/* Mini resume preview */}
                     <div className="dashboard__mini-resume">
@@ -881,7 +885,7 @@ export default function DashboardPage() {
 
                       {menuOpen === r.id && (
                         <div className="dashboard__card-dropdown">
-                          <button onClick={() => router.push(`/editor?id=${r.id}`)}>
+                          <button onClick={() => handleTransition(`/editor?id=${r.id}`)}>
                             <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M11.5 1.5l3 3-9 9H2.5v-3l9-9z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /></svg>
                             Edit
                           </button>
@@ -920,7 +924,7 @@ export default function DashboardPage() {
                 <div className="dashboard__card" key={l.id}>
                   <div
                     className="dashboard__card-preview"
-                    onClick={() => router.push(`/cover-letter/editor?id=${l.id}`)}
+                    onClick={() => handleTransition(`/cover-letter/editor?id=${l.id}`)}
                   >
                     {/* Mini cover letter preview */}
                     <div className="dashboard__mini-resume" style={{ padding: "12px 14px", display: "flex", flexDirection: "column", gap: "5px" }}>
@@ -977,7 +981,7 @@ export default function DashboardPage() {
 
                       {menuOpen === l.id && (
                         <div className="dashboard__card-dropdown">
-                          <button onClick={() => router.push(`/cover-letter/editor?id=${l.id}`)}>
+                          <button onClick={() => handleTransition(`/cover-letter/editor?id=${l.id}`)}>
                             <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M11.5 1.5l3 3-9 9H2.5v-3l9-9z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /></svg>
                             Edit
                           </button>

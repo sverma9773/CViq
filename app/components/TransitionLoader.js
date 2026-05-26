@@ -1,6 +1,8 @@
-import ClaudeIcon from "./components/ClaudeIcon";
+import ClaudeIcon from "./ClaudeIcon";
 
-export default function RootLoading() {
+export default function TransitionLoader({ active }) {
+  if (!active) return null;
+
   return (
     <div className="cviqly-star-transition">
       <div className="cviqly-star-wrapper">

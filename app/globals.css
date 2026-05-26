@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
 
 /* ================================================================
    RESUME MAKER — Global Styles (Claude Design System)
@@ -470,56 +470,48 @@ textarea {
   transform: translateY(0);
 }
 
-/* ── Global Loading State ───────────────────────────────────────── */
-.cviqly-global-loading {
-  position: fixed;
-  inset: 0;
-  background: var(--color-bg-offwhite);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999;
-}
-
-.cviqly-global-loading-bar-wrap {
+/* ── Star Transition Loader ───────────────────────────────────────── */
+.cviqly-star-transition {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--color-border-light);
-  overflow: hidden;
-  z-index: 100000;
-}
-
-.cviqly-global-loading-bar {
-  height: 100%;
-  width: 50%;
-  background: linear-gradient(90deg, var(--color-accent) 0%, #e09476 100%);
-  animation: cviqlyGlobalProgress 1.4s infinite linear;
-}
-
-.cviqly-global-loading-content {
-  position: relative;
-  width: 60px;
-  height: 60px;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  z-index: 99999;
+  animation: cviqlyFadeIn 0.3s ease-out forwards;
 }
 
-.cviqly-global-loading-spinner {
-  position: absolute;
-  inset: 0;
+.cviqly-star-wrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
   border-radius: 50%;
-  border: 2px solid var(--color-border-light);
-  border-top-color: var(--color-accent);
-  animation: cviqlySpin 0.9s infinite linear;
+  box-shadow: 0 8px 30px rgba(218, 119, 86, 0.15);
 }
 
-@keyframes cviqlyGlobalProgress {
-  0% { transform: translateX(-100%); }
-  50% { transform: translateX(50%); }
-  100% { transform: translateX(200%); }
+.cviqly-star-icon {
+  color: var(--color-accent);
+  animation: cviqlyStarSpin 2s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes cviqlyFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cviqlyStarSpin {
+  0% { transform: scale(0.8) rotate(0deg); opacity: 0.5; }
+  50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+  100% { transform: scale(0.8) rotate(360deg); opacity: 0.5; }
 }
