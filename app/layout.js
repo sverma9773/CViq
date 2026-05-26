@@ -238,7 +238,7 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <AuthContextProvider>
           <ClientLayoutWrapper>
             {children}
