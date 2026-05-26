@@ -102,13 +102,16 @@ export default function HowItWorks() {
 
         @media (max-width: 768px) {
           .how-it-works__grid {
-            grid-template-columns: 1fr 1fr;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .how-it-works__grid {
             grid-template-columns: 1fr;
+            border-radius: var(--radius-md);
+          }
+
+          .how-it-works__card {
+            padding: 28px 20px;
+          }
+
+          .how-it-works__card-title {
+            font-size: 1.1rem;
           }
         }
       `}</style>

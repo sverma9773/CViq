@@ -195,7 +195,25 @@ export default function Testimonials() {
 
         @media (max-width: 768px) {
           .testimonials__carousel {
-            min-height: 300px;
+            min-height: 320px;
+          }
+          
+          .testimonials__card {
+            padding: 24px 20px;
+          }
+          
+          .testimonials__text {
+            font-size: 1.05rem;
+          }
+          
+          .testimonials__dot {
+            width: 8px;
+            height: 8px;
+            margin: 0 4px;
+          }
+          
+          .testimonials__dot--active {
+            width: 24px;
           }
         }
       `}</style>

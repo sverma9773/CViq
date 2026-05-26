@@ -1008,7 +1008,7 @@ export default function DashboardPage() {
           ) : (
             <div className="dashboard__tracker-container" style={{ width: "100%", gridColumn: "1 / -1", display: "flex", flexDirection: "column", gap: "24px" }}>
               {/* Stats Grid */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px" }}>
+              <div className="dashboard__stats-grid">
                 <div style={{ background: "var(--color-bg-offwhite)", border: "1px solid var(--color-border-light)", borderRadius: "12px", padding: "16px 20px" }}>
                   <div style={{ fontSize: "11px", color: "var(--color-text-secondary)", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px" }}>Total tracked</div>
                   <div style={{ fontSize: "28px", fontWeight: "300", fontFamily: "var(--font-display)", color: "var(--color-text)", marginTop: "4px" }}>{applications.length}</div>
@@ -2242,6 +2242,12 @@ export default function DashboardPage() {
           text-align: center;
         }
 
+        .dashboard__stats-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 16px;
+        }
+
         /* ── Responsive ──────────────── */
         @media (max-width: 768px) {
           .dashboard {
@@ -2257,12 +2263,18 @@ export default function DashboardPage() {
             z-index: 100;
             width: 100%;
             min-width: 100%;
+            display: flex;
             flex-direction: row;
+            align-items: center;
             border-right: none;
             border-top: 1px solid var(--color-border);
-            padding: 6px 8px;
+            padding: 8px 6px;
             background: var(--color-bg);
             box-shadow: 0 -2px 12px rgba(25,25,24,0.08);
+          }
+
+          .dashboard__logo-container {
+            display: none;
           }
 
           .dashboard__logo {
@@ -2271,16 +2283,30 @@ export default function DashboardPage() {
 
           .dashboard__nav {
             flex-direction: row;
-            gap: 0;
+            gap: 4px;
             width: 100%;
-            justify-content: space-around;
+            justify-content: space-between;
           }
 
           .dashboard__nav-item {
+            flex: 1;
             flex-direction: column;
-            gap: 2px;
+            gap: 4px;
             font-size: 0.65rem;
-            padding: 6px 4px;
+            padding: 8px 2px;
+            min-width: 0;
+            border-radius: var(--radius-md);
+            color: var(--color-text-secondary);
+            font-weight: 500;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+          }
+
+          .dashboard__nav-item--active {
+            background: var(--color-bg-warm);
+            color: var(--color-text);
+            font-weight: 600;
           }
 
           .dashboard__nav-divider {
@@ -2312,6 +2338,10 @@ export default function DashboardPage() {
           .dashboard__grid {
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 14px;
+          }
+
+          .dashboard__stats-grid {
+            grid-template-columns: 1fr;
           }
 
           .dashboard__new-card {

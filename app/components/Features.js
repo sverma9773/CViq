@@ -95,13 +95,16 @@ export default function Features() {
 
         @media (max-width: 768px) {
           .features__grid {
-            grid-template-columns: 1fr 1fr;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .features__grid {
             grid-template-columns: 1fr;
+            gap: 16px;
+          }
+          
+          .features__card {
+            padding: 24px 20px;
+          }
+          
+          .features__card-title {
+            font-size: 1.05rem;
           }
         }
       `}</style>

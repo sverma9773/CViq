@@ -405,6 +405,15 @@ export default function Navbar() {
         }
 
         @media (max-width: 768px) {
+          .navbar {
+            padding: 12px 0;
+          }
+
+          .navbar__inner {
+            padding: 0 24px;
+            justify-content: space-between;
+          }
+
           .navbar__links {
             position: fixed;
             top: 0;
@@ -413,51 +422,67 @@ export default function Navbar() {
             bottom: 0;
             background: var(--color-bg);
             flex-direction: column;
-            justify-content: center;
-            gap: 24px;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 100px 24px 32px;
+            gap: 32px;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
-            z-index: 999;
+            z-index: -1;
           }
 
           .navbar__links--open {
             opacity: 1;
             visibility: visible;
+            z-index: 999;
           }
 
           .navbar__link {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
+            font-weight: 500;
+            width: 100%;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--color-border-light);
           }
 
           .navbar__cta-mobile {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
+            width: 100%;
             gap: 16px;
-            margin-top: 12px;
+            margin-top: auto;
+            padding-top: 32px;
           }
 
-          .navbar__signin-btn-mobile {
-            font-family: var(--font-body);
+          #nav-cta-mobile {
+            width: 100%;
+            min-height: 52px;
             font-size: 1rem;
-            color: var(--color-text-secondary);
-            text-decoration: none;
           }
 
           .navbar__user-mobile {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            margin-top: 12px;
+            align-items: flex-start;
+            width: 100%;
+            gap: 16px;
+            margin-top: auto;
+            padding-top: 32px;
           }
 
           .navbar__user-name-mobile {
             font-family: var(--font-body);
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--color-text);
+            margin-bottom: 8px;
+          }
+
+          .navbar__user-mobile .btn {
+            width: 100%;
+            min-height: 52px;
           }
 
           .navbar__actions-desktop,
@@ -468,6 +493,8 @@ export default function Navbar() {
 
           .navbar__hamburger {
             display: flex;
+            padding: 8px;
+            margin-right: -8px;
           }
 
           .logo-tagline, .logo-separator {
@@ -475,7 +502,13 @@ export default function Navbar() {
           }
           
           .logo-title-wrap {
-            font-size: 0.95rem;
+            font-size: 1.1rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .navbar__inner {
+            padding: 0 20px;
           }
         }
       `}</style>

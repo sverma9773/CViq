@@ -436,18 +436,25 @@ export default function HeroSection() {
 
         @media (max-width: 768px) {
           .hero {
-            padding-top: 110px;
-            padding-bottom: 48px;
+            padding-top: 100px;
+            padding-bottom: 40px;
           }
 
           .hero__content {
             grid-template-columns: 1fr;
-            gap: 40px;
+            gap: 32px;
             text-align: center;
+          }
+
+          .hero__title {
+            font-size: 2.2rem;
+            line-height: 1.15;
           }
 
           .hero__subtitle {
             margin: 0 auto 32px;
+            font-size: 1.05rem;
+            max-width: 100%;
           }
 
           .hero__actions {
@@ -456,56 +463,69 @@ export default function HeroSection() {
             gap: 12px;
           }
 
-          .hero__cta {
+          .hero__cta, #hero-learn-more {
             width: 100%;
-          }
-
-          #hero-learn-more {
-            width: 100%;
+            justify-content: center;
+            min-height: 52px;
+            font-size: 1rem;
           }
 
           .hero__trust {
             justify-content: center;
+            flex-direction: row;
             flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+          }
+
+          .hero__visual {
+            width: 100%;
           }
 
           .hero__resume-card {
-            width: min(320px, 100%);
-            margin: 0 auto;
+            width: 100%;
+            margin: 0;
+            border-radius: var(--radius-lg);
           }
 
           .hero__partners-strip {
-            margin-top: 48px;
-            margin-bottom: -48px;
-            padding: 16px 0;
+            margin-top: 56px;
+            margin-bottom: -40px;
+            padding: 24px 0;
+            background: transparent;
+            border-top: 1px solid var(--color-border-light);
           }
 
           .hero__partners-container {
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
             text-align: center;
+            align-items: center;
           }
 
           .hero__partners-title {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
+            color: var(--color-text-tertiary);
           }
 
           .hero__partners-logos {
-            gap: 16px 20px;
+            gap: 20px 24px;
             justify-content: center;
             flex-wrap: wrap;
+            width: 100%;
           }
 
           .hero__partner-img {
             width: auto;
             object-fit: contain;
+            opacity: 0.8;
           }
 
-          .hero__partner-img--ey { height: 24px; }
-          .hero__partner-img--pwc { height: 24px; }
-          .hero__partner-img--kpmg { height: 22px; }
-          .hero__partner-img--google { height: 32px; }
-          .hero__partner-img--microsoft { height: 28px; }
+          .hero__partner-img--ey { height: 26px; }
+          .hero__partner-img--pwc { height: 26px; }
+          .hero__partner-img--kpmg { height: 24px; }
+          .hero__partner-img--google { height: 36px; }
+          .hero__partner-img--microsoft { height: 32px; }
         }
       `}</style>
     </section>

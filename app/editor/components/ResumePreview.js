@@ -463,12 +463,15 @@ export default function ResumePreview() {
 
       <style jsx>{`
         .preview-wrapper {
-          display: flex; justify-content: center; align-items: flex-start;
-          padding: 32px; overflow-y: auto; height: 100%;
+          padding: 32px; overflow: auto; height: 100%;
           background: #e8e5df;
+          -webkit-overflow-scrolling: touch;
+          text-align: center;
         }
         .preview-pages {
-          display: flex; flex-direction: column; gap: 24px; align-items: center;
+          display: inline-flex; flex-direction: column; gap: 24px; align-items: center;
+          text-align: left;
+          margin: 0 auto;
         }
         .preview-paper {
           width: ${A4_W}px; height: ${A4_H}px; min-height: ${A4_H}px; background: #ffffff;
@@ -523,9 +526,6 @@ export default function ResumePreview() {
         .resume-cert__name { font-weight: 600; color: #191918; }
         .resume-cert__issuer { color: #666; }
         .resume-cert__date { color: #999; font-size: 9pt; }
-        @media (max-width: 900px) {
-          .preview-paper { width: 100%; min-height: auto; border-radius: 8px; padding: 28px; }
-        }
       `}</style>
     </div>
   );

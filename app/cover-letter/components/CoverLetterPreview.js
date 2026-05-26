@@ -155,28 +155,25 @@ export default function CoverLetterPreview() {
 
       <style jsx>{`
         .preview-container {
-          display: flex;
-          justify-content: center;
-          align-items: flex-start;
           padding: 40px 20px;
           background: var(--color-bg-warm);
           height: 100%;
-          overflow-y: auto;
+          overflow: auto;
+          -webkit-overflow-scrolling: touch;
+          text-align: center;
         }
 
         .preview-paper {
+          display: inline-block;
+          text-align: left;
+          margin: 0 auto;
           box-shadow: 0 12px 32px rgba(25,25,24,0.06), 0 2px 6px rgba(25,25,24,0.04);
           transition: all 0.2s ease;
         }
 
         @media (max-width: 768px) {
           .preview-container {
-            padding: 10px;
-          }
-          .preview-paper {
-            width: 100% !important;
-            transform: scale(1) !important;
-            min-height: auto !important;
+            padding: 16px;
           }
         }
       `}</style>

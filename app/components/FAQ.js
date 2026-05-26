@@ -142,6 +142,17 @@ export default function FAQ() {
           line-height: 1.7;
           color: var(--color-text-secondary);
         }
+
+        @media (max-width: 768px) {
+          .faq__question {
+            padding: 16px 0;
+            font-size: 1.05rem;
+          }
+          
+          .faq__answer p {
+            font-size: 0.95rem;
+          }
+        }
       `}</style>
     </section>
   );

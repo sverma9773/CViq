@@ -276,7 +276,7 @@ textarea {
 
 /* ── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .container { padding: 0 var(--space-md); }
+  .container { padding: 0 24px; }
   .section { padding: var(--space-3xl) 0; }
 
   /* Touch-optimized form elements — min 44px tap target */
@@ -303,7 +303,7 @@ textarea {
 }
 
 @media (max-width: 480px) {
-  .container { padding: 0 12px; }
+  .container { padding: 0 20px; }
   .section { padding: var(--space-2xl) 0; }
   .section-header { margin: 0 auto var(--space-2xl); }
 

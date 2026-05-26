@@ -150,29 +150,42 @@ export default function Footer() {
         }
 
         @media (max-width: 768px) {
+          .footer {
+            padding: 48px 0 32px;
+          }
+
           .footer__grid {
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 32px;
+            margin-bottom: 32px;
           }
 
           .footer__brand {
             grid-column: 1 / -1;
           }
 
+          .footer__links-title {
+            font-size: 0.85rem;
+          }
+
+          .footer__link {
+            font-size: 0.95rem;
+            padding: 4px 0; /* Better tap target */
+          }
+
           .footer__bottom {
             flex-direction: column;
-            text-align: center;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .footer__grid {
-            grid-template-columns: 1fr;
-            gap: 24px;
+            text-align: left;
+            align-items: flex-start;
+            gap: 16px;
           }
           
           .logo-tagline, .logo-separator {
             display: none;
+          }
+          
+          .logo-title-wrap {
+            font-size: 1.1rem;
           }
         }
       `}</style>

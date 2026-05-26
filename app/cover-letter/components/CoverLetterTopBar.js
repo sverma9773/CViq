@@ -526,8 +526,6 @@ export default function CoverLetterTopBar({ activeTab, onTabChange, letterId, le
 
         @media (max-width: 768px) {
           .topbar__separator, .topbar__resume-name { display: none; }
-          .topbar__tabs { padding: 2px; }
-          .topbar__tab { padding: 6px 10px; font-size: 0.72rem; min-height: 36px; }
           .topbar__tab-label-full { display: none; }
           .topbar__tab-label-short { display: inline; }
 
@@ -537,8 +535,29 @@ export default function CoverLetterTopBar({ activeTab, onTabChange, letterId, le
           .topbar__download { padding: 7px 12px; font-size: 0.75rem; }
           .topbar__dropdown { right: 0; min-width: 200px; }
 
-          .topbar { height: 48px; padding: 0 12px; }
-          .topbar__left { gap: 6px; }
+          /* Wrap layout for mobile: Logo & Download on top, Tabs on bottom */
+          .topbar { 
+            height: auto; 
+            padding: 10px 12px; 
+            flex-wrap: wrap; 
+            gap: 12px;
+          }
+          .topbar__left { flex: 1; }
+          
+          .topbar__tabs { 
+            order: 3; 
+            width: 100%; 
+            padding: 2px;
+            justify-content: space-between;
+            background: var(--color-bg-offwhite);
+          }
+          .topbar__tab { 
+            flex: 1; 
+            justify-content: center;
+            padding: 8px 4px; 
+            font-size: 0.72rem; 
+            min-height: 36px; 
+          }
         }
       `}</style>
     </div>

@@ -395,27 +395,20 @@ export default function EditorTopBar({ activeTab, onTabChange, resumeId, resumeN
 
         <div className="topbar__export-wrap" ref={dropdownRef}>
           <button
-            className={`topbar__download ${!isUnlocked ? "topbar__download--locked" : ""}`}
-            onClick={() => {
-              if (isUnlocked) setExportOpen(!exportOpen);
-              else onTabChange("ats-check");
-            }}
+            className="topbar__download"
+            onClick={() => setExportOpen(!exportOpen)}
             disabled={exporting}
             id="download-btn"
           >
             {exporting ? (
               <span className="topbar__spinner"></span>
-            ) : !isUnlocked ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             ) : (
               <ClaudeDownload size={15} color="#fff" />
             )}
-            {exporting ? "Exporting..." : !isUnlocked ? "Unlock Download" : "Download"}
-            {isUnlocked && (
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{marginLeft: '2px'}}>
-                <path d="M2.5 4L5 6.5L7.5 4" stroke="#fff" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            )}
+            {exporting ? "Exporting..." : "Download"}
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{marginLeft: '2px'}}>
+              <path d="M2.5 4L5 6.5L7.5 4" stroke="#fff" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </button>
 
           {exportOpen && (
@@ -552,13 +545,6 @@ export default function EditorTopBar({ activeTab, onTabChange, resumeId, resumeN
 
         .topbar__download:hover { background: var(--color-btn-dark-hover); }
         .topbar__download:disabled { opacity: 0.7; cursor: wait; }
-        
-        .topbar__download--locked {
-          background: #da7756;
-        }
-        .topbar__download--locked:hover {
-          background: #c4633f;
-        }
 
         .topbar__spinner {
           width: 14px; height: 14px;
@@ -612,8 +598,6 @@ export default function EditorTopBar({ activeTab, onTabChange, resumeId, resumeN
 
         @media (max-width: 768px) {
           .topbar__badge, .topbar__separator, .topbar__resume-name { display: none; }
-          .topbar__tabs { padding: 2px; }
-          .topbar__tab { padding: 6px 10px; font-size: 0.72rem; min-height: 36px; }
           .topbar__tab-label-full { display: none; }
           .topbar__tab-label-short { display: inline; }
 
@@ -626,8 +610,29 @@ export default function EditorTopBar({ activeTab, onTabChange, resumeId, resumeN
           .topbar__export-wrap { position: relative; }
           .topbar__dropdown { right: 0; min-width: 200px; }
 
-          .topbar { height: 48px; padding: 0 12px; }
-          .topbar__left { gap: 6px; }
+          /* Wrap layout for mobile: Logo & Download on top, Tabs on bottom */
+          .topbar { 
+            height: auto; 
+            padding: 10px 12px; 
+            flex-wrap: wrap; 
+            gap: 12px;
+          }
+          .topbar__left { flex: 1; }
+          
+          .topbar__tabs { 
+            order: 3; 
+            width: 100%; 
+            padding: 2px;
+            justify-content: space-between;
+            background: var(--color-bg-offwhite);
+          }
+          .topbar__tab { 
+            flex: 1; 
+            justify-content: center;
+            padding: 8px 4px; 
+            font-size: 0.72rem; 
+            min-height: 36px; 
+          }
         }
       `}</style>
     </div>
